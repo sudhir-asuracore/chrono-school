@@ -1,0 +1,2 @@
+ALTER TABLE subjects ADD COLUMN color TEXT;
+ALTER TABLE teachers ADD COLUMN color TEXT;

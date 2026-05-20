@@ -3,6 +3,7 @@ export interface Subject {
   organization_id: string;
   name: string;
   requires_double_period: boolean;
+  color?: string;
   created_at: string;
 }
 
@@ -12,6 +13,7 @@ export interface Teacher {
   name: string;
   max_slots_per_week: number;
   qualified_subjects: string[];
+  color?: string;
   created_at: string;
 }
 
@@ -54,6 +56,7 @@ export interface SolveResponse {
   solve_time_ms: number;
   schedule: ScheduleEntry[];
   unassigned_lessons: { class_id: string; subject_id: string; periods_missing: number }[];
+  validation_errors?: string[];
 }
 
 export interface SavedTimetable {

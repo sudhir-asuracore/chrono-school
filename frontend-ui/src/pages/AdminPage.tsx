@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, Upload, AlertCircle, CheckCircle2, Trash2, ShieldAlert } from 'lucide-react';
 import { subjectService, teacherService, classService, adminService } from '../services/api';
 import { cn } from '../utils/cn';
+import { getNextUnusedColor } from '../utils/colors';
 
 const AdminPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -22,11 +23,30 @@ const AdminPage: React.FC = () => {
   const { data: classes } = useQuery({ queryKey: ['classes'], queryFn: classService.getAll });
 
   const handleExport = () => {
+    const subjectMap = new Map((subjects || []).map(s => [s.id, s.name]));
+    
+    // Transform to human-friendly format with name-based references
+    const exportedSubjects = subjects?.map(({ id, organization_id, created_at, color, ...s }) => s) || [];
+    
+    const exportedTeachers = teachers?.map(({ id, organization_id, created_at, color, qualified_subjects, ...t }) => ({
+      ...t,
+      qualified_subjects: (qualified_subjects || []).map(sid => subjectMap.get(sid) || sid)
+    })) || [];
+    
+    const exportedClasses = classes?.map(({ id, organization_id, created_at, curriculum, ...c }) => ({
+      ...c,
+      curriculum: (curriculum || []).map(({ subject_id, ...item }) => ({
+        ...item,
+        subject_name: subjectMap.get(subject_id) || subject_id
+      }))
+    })) || [];
+
     const data = {
-      subjects: subjects || [],
-      teachers: teachers || [],
-      classes: classes || [],
+      subjects: exportedSubjects,
+      teachers: exportedTeachers,
+      classes: exportedClasses,
     };
+
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -59,30 +79,86 @@ const AdminPage: React.FC = () => {
         let successCount = 0;
         let failCount = 0;
 
-        // 1. Subjects
+        // 1. Subjects - Create all subjects first
+        let currentSubjects = await subjectService.getAll() || [];
+        let subjectNameToId = new Map(currentSubjects.map(s => [s.name.toLowerCase(), s.id]));
+        let usedSubjectColors = currentSubjects.map(s => s.color).filter(Boolean) as string[];
+
         for (const s of data.subjects) {
           try {
-            await subjectService.create(s);
+            if (subjectNameToId.has(s.name.toLowerCase())) {
+              successCount++;
+              continue;
+            }
+
+            const subjectData = { ...s };
+            if (!subjectData.color) {
+              subjectData.color = getNextUnusedColor(usedSubjectColors);
+              usedSubjectColors.push(subjectData.color);
+            }
+
+            const newSubject = await subjectService.create(subjectData);
+            subjectNameToId.set(s.name.toLowerCase(), newSubject.id);
             successCount++;
           } catch (err) {
             console.error('Failed to import subject', s, err);
             failCount++;
           }
         }
-        // 2. Teachers
+        
+        // Refresh subjects to be sure we have IDs for all (newly created and existing)
+        currentSubjects = await subjectService.getAll() || [];
+        subjectNameToId = new Map(currentSubjects.map(s => [s.name.toLowerCase(), s.id]));
+
+        // 2. Teachers - Resolve subject names to IDs
+        const currentTeachers = await teacherService.getAll() || [];
+        const teacherNames = new Set(currentTeachers.map(t => t.name.toLowerCase()));
+        let usedTeacherColors = currentTeachers.map(t => t.color).filter(Boolean) as string[];
+
         for (const t of data.teachers) {
           try {
-            await teacherService.create(t);
+            if (teacherNames.has(t.name.toLowerCase())) {
+              successCount++;
+              continue;
+            }
+            const teacherData = {
+              ...t,
+              qualified_subjects: (t.qualified_subjects || []).map((name: string) => 
+                subjectNameToId.get(name.toLowerCase()) || name
+              )
+            };
+
+            if (!teacherData.color) {
+              teacherData.color = getNextUnusedColor(usedTeacherColors);
+              usedTeacherColors.push(teacherData.color);
+            }
+
+            await teacherService.create(teacherData);
             successCount++;
           } catch (err) {
             console.error('Failed to import teacher', t, err);
             failCount++;
           }
         }
-        // 3. Classes
+
+        // 3. Classes - Resolve subject names in curriculum to IDs
+        const currentClasses = await classService.getAll() || [];
+        const classNames = new Set(currentClasses.map(c => c.name.toLowerCase()));
+
         for (const c of data.classes) {
           try {
-            await classService.create(c);
+            if (classNames.has(c.name.toLowerCase())) {
+              successCount++;
+              continue;
+            }
+            const classData = {
+              ...c,
+              curriculum: (c.curriculum || []).map((item: any) => ({
+                periods_per_week: item.periods_per_week,
+                subject_id: subjectNameToId.get((item.subject_name || item.subject_id).toLowerCase()) || item.subject_id
+              }))
+            };
+            await classService.create(classData);
             successCount++;
           } catch (err) {
             console.error('Failed to import class', c, err);
@@ -135,41 +211,48 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold mb-6">Administration</h2>
+    <div className="space-y-12">
+      <div>
+        <h2 className="text-4xl font-black text-gray-900 tracking-tight">Administration</h2>
+        <p className="text-gray-500 mt-2 font-medium">Data management and system maintenance</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center space-x-3 mb-4 text-indigo-600">
-            <Download size={24} />
-            <h3 className="text-xl font-semibold">Export Data</h3>
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-[2.5rem] shadow-sm border border-white hover:shadow-md transition-all">
+          <div className="flex items-center space-x-4 mb-6 text-brand-dark">
+            <div className="bg-brand-secondary p-3 rounded-2xl">
+              <Download size={24} />
+            </div>
+            <h3 className="text-2xl font-black tracking-tight">Export Data</h3>
           </div>
-          <p className="text-gray-600 mb-6">
-            Download all school data (teachers, subjects, and classes) as a JSON file for backup or transfer.
+          <p className="text-gray-500 mb-8 font-medium leading-relaxed">
+            Download all school records (teachers, subjects, and classes) as a portable JSON file.
           </p>
           <button
             onClick={handleExport}
-            className="w-full flex items-center justify-center space-x-2 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors"
+            className="w-full flex items-center justify-center space-x-3 bg-brand-dark text-white py-4 px-6 rounded-full font-black hover:brightness-125 transition-all shadow-lg"
           >
             <Download size={18} />
-            <span>Download JSON</span>
+            <span>DOWNLOAD JSON</span>
           </button>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center space-x-3 mb-4 text-indigo-600">
-            <Upload size={24} />
-            <h3 className="text-xl font-semibold">Import Data</h3>
+        <div className="bg-white/80 backdrop-blur-sm p-8 rounded-[2.5rem] shadow-sm border border-white hover:shadow-md transition-all">
+          <div className="flex items-center space-x-4 mb-6 text-brand-dark">
+            <div className="bg-brand-primary p-3 rounded-2xl shadow-sm">
+              <Upload size={24} />
+            </div>
+            <h3 className="text-2xl font-black tracking-tight">Import Data</h3>
           </div>
-          <p className="text-gray-600 mb-6">
-            Upload a previously exported JSON file to restore or add data. Note: Existing records with the same IDs will be skipped.
+          <p className="text-gray-500 mb-8 font-medium leading-relaxed">
+            Upload school data. records with existing IDs will be skipped to prevent duplicates.
           </p>
           <label className={cn(
-            "w-full flex items-center justify-center space-x-2 py-2 px-4 rounded-lg transition-colors cursor-pointer border-2 border-dashed",
-            isImporting ? "bg-gray-50 border-gray-300 cursor-not-allowed" : "border-indigo-300 hover:border-indigo-500 bg-indigo-50"
+            "w-full flex items-center justify-center space-x-3 py-4 px-6 rounded-full transition-all cursor-pointer border-2 border-dashed font-black uppercase text-sm tracking-widest",
+            isImporting ? "bg-gray-50 border-gray-200 cursor-not-allowed text-gray-400" : "border-brand-primary bg-brand-secondary/30 text-brand-dark hover:bg-brand-secondary/50"
           )}>
-            <Upload size={18} className="text-indigo-600" />
-            <span className="text-indigo-600 font-medium">{isImporting ? 'Importing...' : 'Select JSON File'}</span>
+            <Upload size={18} />
+            <span>{isImporting ? 'IMPORTING...' : 'SELECT FILE'}</span>
             <input
               type="file"
               accept=".json"
@@ -181,79 +264,88 @@ const AdminPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-red-100">
-        <div className="flex items-center space-x-3 mb-4 text-red-600">
-          <Trash2 size={24} />
-          <h3 className="text-xl font-semibold">Clear Data</h3>
+      <div className="bg-white/50 backdrop-blur-md p-10 rounded-[2.5rem] shadow-sm border border-white">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-4 text-red-600">
+            <div className="bg-red-50 p-3 rounded-2xl border border-red-100">
+              <Trash2 size={24} />
+            </div>
+            <h3 className="text-2xl font-black tracking-tight">System Purge</h3>
+          </div>
+          <button 
+            onClick={() => {
+              const allSelected = clearOptions.teachers && clearOptions.subjects && clearOptions.classes;
+              setClearOptions({
+                teachers: !allSelected,
+                subjects: !allSelected,
+                classes: !allSelected
+              });
+            }}
+            className="text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full border border-red-100 text-red-600 hover:bg-red-50 transition-all"
+          >
+            {clearOptions.teachers && clearOptions.subjects && clearOptions.classes ? 'Deselect All' : 'Select All'}
+          </button>
         </div>
-        <p className="text-gray-600 mb-6">
-          Permanently delete selected data from the system. This action cannot be undone.
-        </p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <label className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={clearOptions.teachers}
-              onChange={(e) => setClearOptions({...clearOptions, teachers: e.target.checked})}
-              className="rounded text-red-600 focus:ring-red-500" 
-            />
-            <span className="font-medium text-gray-700">Teachers</span>
-          </label>
-          <label className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={clearOptions.subjects}
-              onChange={(e) => setClearOptions({...clearOptions, subjects: e.target.checked})}
-              className="rounded text-red-600 focus:ring-red-500" 
-            />
-            <span className="font-medium text-gray-700">Subjects</span>
-          </label>
-          <label className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={clearOptions.classes}
-              onChange={(e) => setClearOptions({...clearOptions, classes: e.target.checked})}
-              className="rounded text-red-600 focus:ring-red-500" 
-            />
-            <span className="font-medium text-gray-700">Classes</span>
-          </label>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+          {[
+            { id: 'teachers', label: 'Teachers' },
+            { id: 'subjects', label: 'Subjects' },
+            { id: 'classes', label: 'Classes' }
+          ].map(opt => (
+            <label key={opt.id} className={cn(
+              "flex items-center justify-between p-4 rounded-3xl border-2 cursor-pointer transition-all",
+              (clearOptions as any)[opt.id] 
+                ? "bg-red-50 border-red-200 text-red-900" 
+                : "bg-white border-gray-100 text-gray-400 hover:border-red-100"
+            )}>
+              <span className="font-black text-sm uppercase tracking-widest">{opt.label}</span>
+                <input 
+                  type="checkbox" 
+                  checked={(clearOptions as any)[opt.id]}
+                  onChange={(e) => setClearOptions({...clearOptions, [opt.id]: e.target.checked})}
+                  className="w-5 h-5 rounded-full text-red-600 focus:ring-red-500 border border-gray-200" 
+                />
+            </label>
+          ))}
         </div>
 
         <button
           onClick={() => setShowConfirm(true)}
           disabled={!clearOptions.teachers && !clearOptions.subjects && !clearOptions.classes}
-          className="flex items-center justify-center space-x-2 bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center space-x-3 bg-red-600 text-white py-4 px-10 rounded-full font-black hover:bg-red-700 transition-all shadow-lg shadow-red-100 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed"
         >
-          <Trash2 size={18} />
-          <span>Clear Selected Data</span>
+          <AlertCircle size={20} />
+          <span>WIPE SELECTED DATA</span>
         </button>
       </div>
 
       {showConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 border border-gray-100">
-            <div className="flex items-center space-x-3 text-red-600 mb-4">
-              <ShieldAlert size={32} />
-              <h3 className="text-xl font-bold">Are you absolutely sure?</h3>
-            </div>
-            <p className="text-gray-600 mb-6">
-              This will permanently delete the selected records. This action is irreversible.
-            </p>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowConfirm(false)}
-                className="flex-1 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleClearData}
-                disabled={isClearing}
-                className="flex-1 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-bold flex items-center justify-center"
-              >
-                {isClearing ? 'Clearing...' : 'Yes, Delete All'}
-              </button>
+        <div className="fixed inset-0 bg-brand-dark/40 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+          <div className="bg-white rounded-[3rem] shadow-2xl max-w-md w-full p-10 border border-white animate-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center text-red-600 mb-6">
+                <ShieldAlert size={40} />
+              </div>
+              <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-4">Are you sure?</h3>
+              <p className="text-gray-500 font-medium mb-10">
+                This action is irreversible. All selected data will be permanently removed from the system.
+              </p>
+              <div className="flex w-full space-x-4">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-full font-black text-sm tracking-widest hover:bg-gray-200 transition-all"
+                >
+                  CANCEL
+                </button>
+                <button
+                  onClick={handleClearData}
+                  disabled={isClearing}
+                  className="flex-1 py-4 bg-red-600 text-white rounded-full font-black text-sm tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-200"
+                >
+                  {isClearing ? 'WIPING...' : 'CONFIRM'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -261,13 +353,20 @@ const AdminPage: React.FC = () => {
 
       {importStatus && (
         <div className={cn(
-          "p-4 rounded-lg flex items-start space-x-3",
-          importStatus.type === 'success' ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"
+          "p-6 rounded-[2rem] flex items-center space-x-4 animate-in slide-in-from-bottom-4 duration-300",
+          importStatus.type === 'success' 
+            ? "bg-brand-primary/20 text-brand-dark border border-brand-primary/30" 
+            : "bg-red-50 text-red-900 border border-red-100"
         )}>
-          {importStatus.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
+          <div className={cn(
+            "p-2 rounded-xl shadow-sm",
+            importStatus.type === 'success' ? "bg-brand-primary" : "bg-red-500 text-white"
+          )}>
+            {importStatus.type === 'success' ? <CheckCircle2 size={24} /> : <AlertCircle size={24} />}
+          </div>
           <div>
-            <p className="font-bold">{importStatus.type === 'success' ? 'Success' : 'Operation Report'}</p>
-            <p>{importStatus.message}</p>
+            <p className="font-black text-sm uppercase tracking-widest">{importStatus.type === 'success' ? 'Success' : 'Error Alert'}</p>
+            <p className="font-medium text-sm mt-0.5">{importStatus.message}</p>
           </div>
         </div>
       )}

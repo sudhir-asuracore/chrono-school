@@ -16,8 +16,8 @@ func NewSubjectRepo(db *sqlx.DB) *SubjectRepo {
 }
 
 func (r *SubjectRepo) Create(ctx context.Context, s *models.Subject) error {
-	query := `INSERT INTO subjects (id, organization_id, name, requires_double_period) 
-	          VALUES (:id, :organization_id, :name, :requires_double_period)`
+	query := `INSERT INTO subjects (id, organization_id, name, requires_double_period, color) 
+	          VALUES (:id, :organization_id, :name, :requires_double_period, :color)`
 	_, err := r.db.NamedExecContext(ctx, query, s)
 	return err
 }
@@ -37,7 +37,7 @@ func (r *SubjectRepo) Get(ctx context.Context, id uuid.UUID) (*models.Subject, e
 }
 
 func (r *SubjectRepo) Update(ctx context.Context, s *models.Subject) error {
-	query := `UPDATE subjects SET name = :name, requires_double_period = :requires_double_period 
+	query := `UPDATE subjects SET name = :name, requires_double_period = :requires_double_period, color = :color 
 	          WHERE id = :id AND organization_id = :organization_id`
 	_, err := r.db.NamedExecContext(ctx, query, s)
 	return err

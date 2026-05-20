@@ -16,11 +16,12 @@ docker compose up --build
 This will start the components along with PostgreSQL and Redis.
 
 ## Local Development
-For active development where you want hot-reloading (frontend) and local execution, use the provided development script:
+Local development services can be managed via the `dev.sh` script:
 ```bash
-./dev.sh
+./dev.sh        # Start all services
+./dev.sh reset  # Reset and rebuild infrastructure (Postgres, Redis)
 ```
-This script will:
+The script will:
 1. Start PostgreSQL and Redis in Docker.
 2. Start all backend services locally in the background.
 3. Start the frontend Vite server in dev mode.

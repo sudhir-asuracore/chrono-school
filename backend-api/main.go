@@ -118,6 +118,8 @@ func runMigrations(db *sqlx.DB) error {
 	migrations := []string{
 		"db/migrations/000001_init_schema.up.sql",
 		"db/migrations/000002_add_saved_timetables.up.sql",
+		"db/migrations/000003_add_color_to_subjects_and_teachers.up.sql",
+		"db/migrations/000004_add_unique_constraints.up.sql",
 	}
 
 	for _, m := range migrations {

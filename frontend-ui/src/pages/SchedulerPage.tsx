@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { jobService, classService, teacherService, subjectService, savedTimetableService } from '../services/api';
 import { Play, Loader2, CheckCircle2, XCircle, Calendar, Save, Trash2, RefreshCw, AlertTriangle } from 'lucide-react';
+import { cn } from '../utils/cn';
 import TimetableGrid from '../components/TimetableGrid';
 import { SolveResponse, SavedTimetable, ScheduleEntry } from '../types';
 
@@ -142,188 +143,292 @@ const SchedulerPage: React.FC = () => {
     createJobMutation.mutate({ pre_assigned });
   };
 
+  const calculateStats = () => {
+    if (!result || !teachers || !classes) return null;
+
+    const teacherAssignments: Record<string, number> = {};
+    result.schedule.forEach(entry => {
+      teacherAssignments[entry.teacher_id] = (teacherAssignments[entry.teacher_id] || 0) + 1;
+    });
+
+    const overloadedTeachers = teachers.filter(t => (teacherAssignments[t.id] || 0) > t.max_slots_per_week);
+    const freeTeachers = teachers.filter(t => (teacherAssignments[t.id] || 0) === 0);
+
+    const classFreeSlots: Record<string, number> = {};
+    // Assuming 5 days * 8 slots = 40. Ideally this should come from settings.
+    const TOTAL_SLOTS = 40; 
+
+    classes.forEach(c => {
+      const assignedCount = result.schedule.filter(s => s.class_id === c.id).length;
+      classFreeSlots[c.id] = Math.max(0, TOTAL_SLOTS - assignedCount);
+    });
+
+    return {
+      overloadedTeachers,
+      freeTeachers,
+      classFreeSlots,
+      totalAssigned: result.schedule.length,
+      unassignedCount: result.unassigned_lessons.reduce((acc, curr) => acc + curr.periods_missing, 0)
+    };
+  };
+
+  const stats = calculateStats();
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <div className="lg:col-span-3 space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Scheduler Workspace</h2>
-          <div className="flex space-x-2">
-            {result && (
-              <div className="flex items-center space-x-2 mr-4 border-r pr-4 border-gray-200">
-                <input
-                  type="text"
-                  placeholder="Timetable Name"
-                  value={saveName}
-                  onChange={(e) => setSaveName(e.target.value)}
-                  className="px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <button
-                  onClick={handleSave}
-                  disabled={saveMutation.isPending || !saveName}
-                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-                >
-                  <Save size={18} />
-                  <span>Save</span>
-                </button>
-              </div>
-            )}
-            <button
-              onClick={() => createJobMutation.mutate()}
-              disabled={createJobMutation.isPending || (!!activeJobId && jobStatus?.status !== 'COMPLETED' && jobStatus?.status !== 'FAILED')}
-              className="flex items-center space-x-2 bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-            >
-              {createJobMutation.isPending || (activeJobId && !['COMPLETED', 'FAILED'].includes(jobStatus?.status || '')) ? (
-                <Loader2 className="animate-spin" size={20} />
-              ) : (
-                <Play size={20} />
-              )}
-              <span>Generate Timetable</span>
-            </button>
-          </div>
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h2 className="text-4xl font-black text-gray-900 tracking-tight">Scheduler</h2>
+          <p className="text-gray-500 mt-2 font-medium">Create and manage optimized school timetables</p>
         </div>
-
-        {activeJobId && (
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="font-medium text-gray-700">Job ID: <span className="text-xs text-gray-400">{activeJobId}</span></div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500 font-medium">Status:</span>
-                <StatusBadge status={jobStatus?.status || 'PENDING'} />
-              </div>
-            </div>
-            {jobStatus?.status === 'FAILED' && (
-              <div className="text-sm text-red-600 font-medium">{jobStatus.error_message}</div>
-            )}
-          </div>
-        )}
-
-        {result && (
-          <div className="space-y-6">
-            {['OPTIMAL', 'FEASIBLE'].includes(result.status) ? (
-              <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center space-x-3 text-green-800">
-                <CheckCircle2 size={24} />
-                <div>
-                  <p className="font-bold">Timetable Generated Successfully!</p>
-                  <p className="text-sm opacity-90">Solve time: {result.solve_time_ms}ms | Status: {result.status}</p>
-                </div>
-              </div>
-            ) : result.status === 'LOADED' ? (
-              <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center space-x-3 text-blue-800">
-                <Calendar size={24} />
-                <div>
-                  <p className="font-bold">Saved Timetable Loaded</p>
-                  <p className="text-sm opacity-90">You can now view, adjust, and re-run the solver if needed.</p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl flex items-center space-x-3 text-amber-800">
-                <XCircle size={24} className="text-amber-600" />
-                <div>
-                  <p className="font-bold">Timetable Generation Infeasible</p>
-                  <p className="text-sm opacity-90">
-                    The solver could not find a valid schedule that satisfies all hard constraints.
-                  </p>
-                  <div className="mt-2 text-xs">
-                    <p className="font-semibold">Possible reasons:</p>
-                    <ul className="list-disc ml-4 mt-1 space-y-1">
-                      <li>Teachers assigned more periods than their max slots per week.</li>
-                      <li>Not enough time slots to fit all required curriculum periods for a class.</li>
-                      <li>Conflicting fixed breaks or complex double period requirements.</li>
-                    </ul>
-                  </div>
-
-                  {result.unassigned_lessons?.length > 0 && (
-                    <div className="mt-4 p-3 bg-white bg-opacity-50 rounded-lg">
-                      <p className="font-semibold text-xs mb-2">Unassigned Lessons (Partial Schedule Generated):</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-                        {result.unassigned_lessons.map((ul, idx) => {
-                          const className = classes?.find(c => c.id === ul.class_id)?.name || ul.class_id;
-                          const subjectName = subjects?.find(s => s.id === ul.subject_id)?.name || ul.subject_id;
-                          return (
-                            <div key={idx} className="flex justify-between text-[10px] border-b border-amber-200 pb-1">
-                              <span className="truncate mr-2">{className} - {subjectName}</span>
-                              <span className="font-bold text-amber-700 whitespace-nowrap">{ul.periods_missing} missing</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  <p className="text-xs mt-3 opacity-75">Status: {result.status} | Solve time: {result.solve_time_ms}ms</p>
-                </div>
-              </div>
-            )}
-
-            {localSchedule.length > 0 && (
-              <TimetableGrid 
-                schedule={result.schedule} 
-                unassignedLessons={result.unassigned_lessons}
-                onRefine={handleRefine}
-                localSchedule={localSchedule}
-                setLocalSchedule={setLocalSchedule}
+        
+        <div className="flex items-center space-x-3">
+          {result && (
+            <div className="flex items-center space-x-2 bg-white p-1.5 pl-4 rounded-full shadow-sm border border-gray-100">
+              <input
+                type="text"
+                placeholder="Timetable Name"
+                value={saveName}
+                onChange={(e) => setSaveName(e.target.value)}
+                className="bg-transparent border-none focus:ring-0 text-sm font-bold w-40"
               />
+              <button
+                onClick={handleSave}
+                disabled={saveMutation.isPending || !saveName}
+                className="flex items-center space-x-2 bg-brand-dark text-white px-6 py-2 rounded-full font-bold hover:brightness-125 transition-all disabled:opacity-50"
+              >
+                <Save size={18} />
+                <span>Save</span>
+              </button>
+            </div>
+          )}
+          <button
+            onClick={() => createJobMutation.mutate()}
+            disabled={createJobMutation.isPending || (!!activeJobId && jobStatus?.status !== 'COMPLETED' && jobStatus?.status !== 'FAILED')}
+            className="flex items-center space-x-3 bg-brand-primary text-brand-dark px-8 py-3.5 rounded-full font-black hover:brightness-95 transition-all shadow-lg disabled:opacity-50"
+          >
+            {createJobMutation.isPending || (activeJobId && !['COMPLETED', 'FAILED'].includes(jobStatus?.status || '')) ? (
+              <Loader2 className="animate-spin" size={24} />
+            ) : (
+              <Play fill="currentColor" size={24} />
             )}
-          </div>
-        )}
+            <span>Generate Schedule</span>
+          </button>
+        </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-gray-800 flex items-center">
-              <Calendar className="mr-2 text-indigo-600" size={20} />
-              Saved Timetables
-            </h3>
-            <button 
-              onClick={() => queryClient.invalidateQueries({ queryKey: ['saved-timetables'] })}
-              className="text-gray-400 hover:text-indigo-600"
-            >
-              <RefreshCw size={16} />
-            </button>
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="lg:col-span-3 space-y-8">
+          {activeJobId && (
+            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-[2rem] shadow-sm border border-white flex items-center justify-between">
+              <div className="flex items-center space-x-6">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Job Identifier</span>
+                  <span className="text-sm font-bold text-gray-700">{activeJobId.substring(0, 8)}...</span>
+                </div>
+                <div className="h-10 w-px bg-gray-100"></div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</span>
+                  <StatusBadge status={jobStatus?.status || 'PENDING'} />
+                </div>
+              </div>
+              {jobStatus?.status === 'FAILED' && (
+                <div className="flex items-center space-x-2 text-red-600 bg-red-50 px-4 py-2 rounded-full border border-red-100">
+                  <AlertTriangle size={18} />
+                  <span className="text-sm font-bold">{jobStatus.error_message}</span>
+                </div>
+              )}
+            </div>
+          )}
 
-          <div className="space-y-3">
-            {!savedTimetables || savedTimetables.length === 0 ? (
-              <p className="text-sm text-gray-400 italic text-center py-4">No saved timetables yet.</p>
-            ) : (
-              savedTimetables.map((st) => {
-                const outOfSync = isOutOfSync(st);
-                return (
-                  <div key={st.id} className="p-3 border rounded-lg hover:border-indigo-300 transition-colors group">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="font-medium text-sm text-gray-800 truncate pr-2">{st.name}</div>
-                      <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {result && (
+            <div className="space-y-8 animate-in fade-in zoom-in-95 duration-500">
+              {['OPTIMAL', 'FEASIBLE'].includes(result.status) ? (
+                <div className="bg-brand-primary/10 border border-brand-primary/20 p-6 rounded-[2rem] flex items-center space-x-4 text-brand-dark">
+                  <div className="bg-brand-primary p-3 rounded-2xl shadow-sm">
+                    <CheckCircle2 size={28} />
+                  </div>
+                  <div>
+                    <p className="font-black text-xl">Timetable Generated Successfully!</p>
+                    <p className="text-sm font-bold opacity-70">Solved in {result.solve_time_ms}ms | Quality: {result.status}</p>
+                  </div>
+                </div>
+              ) : result.status === 'LOADED' ? (
+                <div className="bg-white p-6 rounded-[2rem] border border-gray-100 flex items-center space-x-4 text-gray-800 shadow-sm">
+                  <div className="bg-gray-100 p-3 rounded-2xl">
+                    <Calendar size={28} className="text-gray-600" />
+                  </div>
+                  <div>
+                    <p className="font-black text-xl">Saved Timetable Loaded</p>
+                    <p className="text-sm font-bold text-gray-400">Viewing archived schedule data</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-red-50 border border-red-100 p-8 rounded-[2rem] text-red-900 shadow-sm">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="bg-red-500 text-white p-3 rounded-2xl shadow-lg shadow-red-200">
+                      <XCircle size={28} />
+                    </div>
+                    <div>
+                      <p className="font-black text-2xl tracking-tight">Generation Infeasible</p>
+                      <p className="text-sm font-bold text-red-400">Could not satisfy all constraints</p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-white/50 p-6 rounded-3xl border border-red-100/50">
+                      <p className="font-black text-xs uppercase tracking-widest text-red-400 mb-4">Possible Conflicts</p>
+                      <ul className="space-y-3">
+                        {result.validation_errors && result.validation_errors.length > 0 ? (
+                          result.validation_errors.map((msg, i) => (
+                            <li key={i} className="flex items-start text-sm font-bold text-red-800">
+                              <span className="w-1.5 h-1.5 bg-red-400 rounded-full mr-3 mt-1.5 shrink-0"></span>
+                              {msg}
+                            </li>
+                          ))
+                        ) : (
+                          ['Teacher capacity exceeded', 'Slot availability restricted', 'Unsatisfiable curriculum'].map((msg, i) => (
+                            <li key={i} className="flex items-center text-sm font-bold text-red-800">
+                              <span className="w-1.5 h-1.5 bg-red-400 rounded-full mr-3"></span>
+                              {msg}
+                            </li>
+                          ))
+                        )}
+                      </ul>
+                    </div>
+
+                    {result.unassigned_lessons?.length > 0 && (
+                      <div className="bg-white p-6 rounded-3xl shadow-sm border border-red-100">
+                        <p className="font-black text-xs uppercase tracking-widest text-red-400 mb-4">Unassigned Lessons</p>
+                        <div className="space-y-2 max-h-40 overflow-auto pr-2">
+                          {result.unassigned_lessons.map((ul, idx) => {
+                            const className = classes?.find(c => c.id === ul.class_id)?.name || ul.class_id;
+                            const subjectName = subjects?.find(s => s.id === ul.subject_id)?.name || ul.subject_id;
+                            return (
+                              <div key={idx} className="flex justify-between items-center bg-red-50/50 px-3 py-2 rounded-xl border border-red-100/30">
+                                <span className="text-xs font-bold truncate">{className} - {subjectName}</span>
+                                <span className="text-[10px] font-black bg-red-100 text-red-600 px-2 py-0.5 rounded-full">{ul.periods_missing}p</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {localSchedule.length > 0 && (
+                <div className="bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-white p-2 shadow-inner">
+                  <TimetableGrid 
+                    schedule={result.schedule} 
+                    unassignedLessons={result.unassigned_lessons}
+                    onRefine={handleRefine}
+                    localSchedule={localSchedule}
+                    setLocalSchedule={setLocalSchedule}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-6">
+          <div className="bg-brand-dark p-8 rounded-[2.5rem] shadow-xl text-white">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="font-black text-lg flex items-center tracking-tight">
+                <div className="w-8 h-8 bg-brand-primary rounded-xl flex items-center justify-center mr-3 shadow-lg shadow-brand-primary/20">
+                  <Calendar className="text-brand-dark" size={18} />
+                </div>
+                Saved
+              </h3>
+              <button 
+                onClick={() => queryClient.invalidateQueries({ queryKey: ['saved-timetables'] })}
+                className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all"
+              >
+                <RefreshCw size={14} className={cn(queryClient.isFetching({ queryKey: ['saved-timetables'] }) ? 'animate-spin' : '')} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {!savedTimetables || savedTimetables.length === 0 ? (
+                <div className="text-center py-12 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Empty Vault</p>
+                </div>
+              ) : (
+                savedTimetables.map((st) => {
+                  const outOfSync = isOutOfSync(st);
+                  return (
+                    <div key={st.id} className="p-5 bg-white/5 border border-white/10 rounded-3xl hover:bg-white/10 transition-all group relative overflow-hidden">
+                      {outOfSync && <div className="absolute top-0 right-0 w-2 h-2 bg-brand-primary rounded-bl-full"></div>}
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="font-bold text-sm truncate pr-2 tracking-tight">{st.name}</div>
                         <button 
                           onClick={() => deleteSavedMutation.mutate(st.id)}
-                          className="text-red-400 hover:text-red-600 p-1"
+                          className="text-white/20 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-all"
                         >
                           <Trash2 size={14} />
                         </button>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="text-[10px] text-gray-400">
-                        {new Date(st.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        {outOfSync && (
-                          <span className="flex items-center text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-                            <AlertTriangle size={10} className="mr-1" />
-                            Not in Sync
-                          </span>
-                        )}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-gray-500">
+                          {new Date(st.created_at).toLocaleDateString()}
+                        </span>
                         <button
                           onClick={() => loadTimetable(st)}
-                          className="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
+                          className="bg-brand-primary text-brand-dark px-4 py-1.5 rounded-full text-xs font-black hover:brightness-110 shadow-sm"
                         >
                           Load
                         </button>
                       </div>
                     </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+          
+          <div className="bg-brand-secondary p-8 rounded-[2.5rem] border border-brand-primary/20">
+            <h4 className="font-black text-brand-dark text-sm uppercase tracking-widest mb-6">Quick Stats</h4>
+            {!stats ? (
+              <div className="text-center py-8">
+                <p className="text-xs font-bold text-brand-dark/40 italic">Generate a schedule to see insights</p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center bg-white/40 p-3 rounded-2xl">
+                  <span className="text-xs font-bold text-brand-dark/60">Overloaded Teachers</span>
+                  <span className={cn("text-sm font-black", stats.overloadedTeachers.length > 0 ? "text-red-600" : "text-brand-dark")}>
+                    {stats.overloadedTeachers.length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center bg-white/40 p-3 rounded-2xl">
+                  <span className="text-xs font-bold text-brand-dark/60">Free Teachers</span>
+                  <span className="text-sm font-black text-brand-dark">{stats.freeTeachers.length}</span>
+                </div>
+                <div className="flex justify-between items-center bg-white/40 p-3 rounded-2xl">
+                  <span className="text-xs font-bold text-brand-dark/60">Scheduled Lessons</span>
+                  <span className="text-sm font-black text-brand-dark">{stats.totalAssigned}h</span>
+                </div>
+                <div className="flex justify-between items-center bg-white/40 p-3 rounded-2xl">
+                  <span className="text-xs font-bold text-brand-dark/60">Total Unassigned</span>
+                  <span className={cn("text-sm font-black", stats.unassignedCount > 0 ? "text-red-600" : "text-brand-dark")}>
+                    {stats.unassignedCount}
+                  </span>
+                </div>
+                
+                <div className="pt-4 border-t border-brand-primary/10">
+                  <p className="text-[10px] font-black text-brand-dark/40 uppercase tracking-widest mb-3">Free Slots by Class</p>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+                    {Object.entries(stats.classFreeSlots).map(([classId, free]) => (
+                      <div key={classId} className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-brand-dark/70">{classes?.find(c => c.id === classId)?.name || classId}</span>
+                        <span className="font-black text-brand-dark bg-white/60 px-2 py-0.5 rounded-lg">{free}h</span>
+                      </div>
+                    ))}
                   </div>
-                );
-              })
+                </div>
+              </div>
             )}
           </div>
         </div>

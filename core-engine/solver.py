@@ -5,6 +5,69 @@ from models import SolveRequest, SolveResponse, ScheduleEntry, UnassignedLesson
 
 def solve_timetable(request: SolveRequest) -> SolveResponse:
     start_time = time.time()
+    validation_errors = []
+
+    # 0. Pre-solving Validation
+    teachers_by_id = {t.id: t for t in request.teachers}
+    subjects_by_id = {s.id: s for s in request.subjects}
+    classes_by_id = {c.id: c for c in request.classes}
+    
+    num_days = len(request.settings.days)
+    num_slots = request.settings.timeslots_per_day
+    total_slots_available = num_days * num_slots
+    
+    # Check 1: Subject with no qualified teachers
+    subject_teacher_count = {s_id: 0 for s_id in subjects_by_id}
+    for t in request.teachers:
+        for s_id in t.qualified_subjects:
+            if s_id in subject_teacher_count:
+                subject_teacher_count[s_id] += 1
+    
+    for s_id, count in subject_teacher_count.items():
+        if count == 0:
+            # Check if this subject is actually needed
+            is_needed = False
+            for c in request.classes:
+                if any(curr.subject_id == s_id for curr in c.curriculum):
+                    is_needed = True
+                    break
+            if is_needed:
+                validation_errors.append(f"Subject '{subjects_by_id[s_id].name}' has no qualified teachers.")
+
+    # Check 2: Total periods required per class exceeds available slots
+    for c in request.classes:
+        total_required = sum(curr.periods_per_week for curr in c.curriculum)
+        if total_required > total_slots_available:
+            validation_errors.append(f"Class '{c.name}' requires {total_required} periods, but only {total_slots_available} are available in the week.")
+
+    # Check 3: Teacher capacity vs Subject requirements
+    subject_requirements = {s_id: 0 for s_id in subjects_by_id}
+    for c in request.classes:
+        for curr in c.curriculum:
+            subject_requirements[curr.subject_id] += curr.periods_per_week
+    
+    teacher_capacity_by_subject = {s_id: 0 for s_id in subjects_by_id}
+    for t in request.teachers:
+        for s_id in t.qualified_subjects:
+            if s_id in teacher_capacity_by_subject:
+                # This is a bit optimistic as a teacher can teach multiple subjects, 
+                # but it's a hard upper bound.
+                teacher_capacity_by_subject[s_id] += t.max_slots_per_week
+    
+    for s_id, req in subject_requirements.items():
+        cap = teacher_capacity_by_subject[s_id]
+        if req > cap:
+            validation_errors.append(f"Total requirements for '{subjects_by_id[s_id].name}' ({req} periods) exceed total capacity of qualified teachers ({cap} periods).")
+
+    if validation_errors:
+        return SolveResponse(
+            status="INFEASIBLE",
+            solve_time_ms=(time.time() - start_time) * 1000,
+            schedule=[],
+            unassigned_lessons=[],
+            validation_errors=validation_errors
+        )
+
     model = cp_model.CpModel()
 
     num_days = len(request.settings.days)
@@ -254,5 +317,6 @@ def solve_timetable(request: SolveRequest) -> SolveResponse:
         status=response_status,
         solve_time_ms=solve_time,
         schedule=schedule,
-        unassigned_lessons=unassigned_lessons
+        unassigned_lessons=unassigned_lessons,
+        validation_errors=validation_errors
     )

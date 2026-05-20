@@ -22,8 +22,8 @@ func (r *TeacherRepo) Create(ctx context.Context, t *models.Teacher) error {
 	}
 	defer tx.Rollback()
 
-	query := `INSERT INTO teachers (id, organization_id, name, max_slots_per_week) 
-	          VALUES (:id, :organization_id, :name, :max_slots_per_week)`
+	query := `INSERT INTO teachers (id, organization_id, name, max_slots_per_week, color) 
+	          VALUES (:id, :organization_id, :name, :max_slots_per_week, :color)`
 	_, err = tx.NamedExecContext(ctx, query, t)
 	if err != nil {
 		return err
@@ -110,7 +110,7 @@ func (r *TeacherRepo) Update(ctx context.Context, t *models.Teacher) error {
 	}
 	defer tx.Rollback()
 
-	query := `UPDATE teachers SET name = :name, max_slots_per_week = :max_slots_per_week 
+	query := `UPDATE teachers SET name = :name, max_slots_per_week = :max_slots_per_week, color = :color 
 	          WHERE id = :id AND organization_id = :organization_id`
 	_, err = tx.NamedExecContext(ctx, query, t)
 	if err != nil {

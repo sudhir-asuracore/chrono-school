@@ -64,3 +64,4 @@ class SolveResponse(BaseModel):
     solve_time_ms: float
     schedule: List[ScheduleEntry]
     unassigned_lessons: List[UnassignedLesson]
+    validation_errors: List[str] = []

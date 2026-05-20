@@ -1,98 +1,114 @@
 {
   "subjects": [
     {
-      "id": "550e8400-e29b-41d4-a716-446655440001",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Mathematics",
       "requires_double_period": false
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440002",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Physics",
       "requires_double_period": false
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440003",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Chemistry",
       "requires_double_period": false
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440004",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Biology",
       "requires_double_period": false
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440005",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "History",
       "requires_double_period": false
     }
   ],
   "teachers": [
     {
-      "id": "550e8400-e29b-41d4-a716-446655440101",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Alice Math",
-      "qualified_subjects": ["550e8400-e29b-41d4-a716-446655440001"],
-      "max_slots_per_week": 30
+      "max_slots_per_week": 30,
+      "qualified_subjects": [
+        "Mathematics"
+      ]
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440102",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Bob Physics",
-      "qualified_subjects": ["550e8400-e29b-41d4-a716-446655440002"],
-      "max_slots_per_week": 30
+      "max_slots_per_week": 30,
+      "qualified_subjects": [
+        "Physics"
+      ]
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440103",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Charlie Chem",
-      "qualified_subjects": ["550e8400-e29b-41d4-a716-446655440003"],
-      "max_slots_per_week": 30
+      "max_slots_per_week": 30,
+      "qualified_subjects": [
+        "Chemistry"
+      ]
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440104",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Dana Bio",
-      "qualified_subjects": ["550e8400-e29b-41d4-a716-446655440004"],
-      "max_slots_per_week": 30
+      "max_slots_per_week": 30,
+      "qualified_subjects": [
+        "Biology"
+      ]
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440105",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Eve History",
-      "qualified_subjects": ["550e8400-e29b-41d4-a716-446655440005"],
-      "max_slots_per_week": 30
+      "max_slots_per_week": 30,
+      "qualified_subjects": [
+        "History"
+      ]
     }
   ],
   "classes": [
     {
-      "id": "550e8400-e29b-41d4-a716-446655440201",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Class 10A",
       "type": "Regular",
       "curriculum": [
-        { "class_id": "550e8400-e29b-41d4-a716-446655440201", "subject_id": "550e8400-e29b-41d4-a716-446655440001", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440201", "subject_id": "550e8400-e29b-41d4-a716-446655440002", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440201", "subject_id": "550e8400-e29b-41d4-a716-446655440003", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440201", "subject_id": "550e8400-e29b-41d4-a716-446655440004", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440201", "subject_id": "550e8400-e29b-41d4-a716-446655440005", "periods_per_week": 4 }
+        {
+          "subject_name": "Mathematics",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "Physics",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "Chemistry",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "Biology",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "History",
+          "periods_per_week": 4
+        }
       ]
     },
     {
-      "id": "550e8400-e29b-41d4-a716-446655440202",
-      "organization_id": "00000000-0000-0000-0000-000000000000",
       "name": "Class 10B",
       "type": "Regular",
       "curriculum": [
-        { "class_id": "550e8400-e29b-41d4-a716-446655440202", "subject_id": "550e8400-e29b-41d4-a716-446655440001", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440202", "subject_id": "550e8400-e29b-41d4-a716-446655440002", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440202", "subject_id": "550e8400-e29b-41d4-a716-446655440003", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440202", "subject_id": "550e8400-e29b-41d4-a716-446655440004", "periods_per_week": 4 },
-        { "class_id": "550e8400-e29b-41d4-a716-446655440202", "subject_id": "550e8400-e29b-41d4-a716-446655440005", "periods_per_week": 4 }
+        {
+          "subject_name": "Mathematics",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "Physics",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "Chemistry",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "Biology",
+          "periods_per_week": 4
+        },
+        {
+          "subject_name": "History",
+          "periods_per_week": 4
+        }
       ]
     }
   ]

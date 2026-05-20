@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#fdf8e1] min-h-screen text-gray-900;
+    background: radial-gradient(circle at top right, #fff9e6 0%, #fdf8e1 100%);
+  }
+}
+
+@layer components {
+  .card-container {
+    @apply bg-white/80 backdrop-blur-sm rounded-[2.5rem] shadow-xl border border-white;
+  }
+}

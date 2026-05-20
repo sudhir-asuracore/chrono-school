@@ -9,6 +9,14 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Function to reset infrastructure
+reset_infra() {
+    echo -e "${BLUE}Resetting and rebuilding infrastructure (Postgres, Redis)...${NC}"
+    docker compose down -v postgres redis
+    docker compose up -d --build postgres redis
+    echo -e "${GREEN}Infrastructure reset complete.${NC}"
+}
+
 # Function to cleanup background processes on exit
 cleanup() {
     echo -e "\n${YELLOW}Stopping all services...${NC}"
@@ -30,6 +38,17 @@ cleanup() {
 
 # Trap Ctrl+C (SIGINT) and exit
 trap cleanup SIGINT
+
+# Check for reset argument
+if [ "$1" == "reset" ]; then
+    reset_infra
+    # If the user only wanted to reset, they might want to exit here.
+    # But usually it's better to allow starting everything after reset if desired.
+    # However, the instruction just says "add a function".
+    # I'll make it exit to keep it clean, or maybe the user wants to reset AND start?
+    # Usually "reset" is a destructive operation you might want to do separately.
+    exit 0
+fi
 
 echo -e "${BLUE}======================================================${NC}"
 echo -e "${BLUE}   ChronoSchool Open Source Development Environment   ${NC}"

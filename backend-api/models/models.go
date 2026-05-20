@@ -17,6 +17,7 @@ type Subject struct {
 	OrganizationID       uuid.UUID `db:"organization_id" json:"organization_id"`
 	Name                 string    `db:"name" json:"name"`
 	RequiresDoublePeriod bool      `db:"requires_double_period" json:"requires_double_period"`
+	Color                string    `db:"color" json:"color"`
 	CreatedAt            time.Time `db:"created_at" json:"created_at"`
 }
 
@@ -25,6 +26,7 @@ type Teacher struct {
 	OrganizationID    uuid.UUID   `db:"organization_id" json:"organization_id"`
 	Name              string      `db:"name" json:"name"`
 	MaxSlotsPerWeek   int         `db:"max_slots_per_week" json:"max_slots_per_week"`
+	Color             string      `db:"color" json:"color"`
 	CreatedAt         time.Time   `db:"created_at" json:"created_at"`
 	QualifiedSubjects []uuid.UUID `json:"qualified_subjects,omitempty"`
 }

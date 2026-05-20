@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { classService, subjectService } from '../services/api';
 import { Plus, Trash2, Edit2, Book } from 'lucide-react';
+import Modal from '../components/Modal';
 import { CurriculumItem } from '../types';
+import { cn } from '../utils/cn';
 
 const ClassesPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -39,6 +41,17 @@ const ClassesPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for duplicate names
+    const isDuplicate = classes?.some(c => 
+      c.name.toLowerCase() === formData.name.toLowerCase() && c.id !== editingId
+    );
+    
+    if (isDuplicate) {
+      alert('A class with this name already exists.');
+      return;
+    }
+
     if (editingId) {
       updateMutation.mutate(formData);
     } else {
@@ -91,17 +104,17 @@ const ClassesPage: React.FC = () => {
 
   if (isLoading) return (
     <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-dark"></div>
     </div>
   );
 
   if (isError) return (
-    <div className="bg-red-50 p-4 rounded-lg text-red-700 border border-red-200">
+    <div className="bg-red-50 p-6 rounded-3xl text-red-700 border border-red-100">
       <h3 className="font-bold">Error loading classes</h3>
       <p>{(classError as any)?.message || 'An unexpected error occurred'}</p>
-      <button 
+      <button
         onClick={() => queryClient.invalidateQueries({ queryKey: ['classes'] })}
-        className="mt-2 text-sm font-medium underline"
+        className="mt-4 px-4 py-2 bg-white rounded-full text-sm font-medium shadow-sm"
       >
         Try again
       </button>
@@ -109,146 +122,168 @@ const ClassesPage: React.FC = () => {
   );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Classes</h2>
-        <button
-          onClick={startAdding}
-          className="flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
-        >
-          <Plus size={20} />
-          <span>Add Class</span>
-        </button>
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-4xl font-bold text-gray-900">Classes</h2>
+          <div className="flex items-center space-x-4 mt-4">
+            <div className="bg-brand-dark text-white px-4 py-1.5 rounded-full text-sm font-medium flex items-center space-x-2">
+              <span className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></span>
+              <span>{classes?.length || 0} Total</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={startAdding}
+            className="flex items-center space-x-2 bg-brand-primary text-brand-dark px-6 py-2.5 rounded-full font-bold hover:brightness-95 transition-all shadow-sm"
+          >
+            <Plus size={20} />
+            <span>Add Class</span>
+          </button>
+        </div>
       </div>
 
-      {isAdding && (
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-6">
-          <h3 className="text-lg font-bold mb-4">{editingId ? 'Edit Class' : 'Add New Class'}</h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Type</label>
-                <select
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                >
-                  <option value="primary">Primary</option>
-                  <option value="secondary">Secondary</option>
-                </select>
-              </div>
-            </div>
-
+      <Modal 
+        isOpen={isAdding} 
+        onClose={cancelForm} 
+        title={editingId ? 'Edit Class' : 'Add New Class'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-700">Curriculum</label>
-                <button
-                  type="button"
-                  onClick={addCurriculumItem}
-                  className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
-                >
-                  + Add Subject
-                </button>
-              </div>
-              <div className="space-y-2">
-                {formData.curriculum.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3">
-                    <select
-                      className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      value={item.subject_id}
-                      onChange={(e) => updateCurriculumItem(index, 'subject_id', e.target.value)}
-                    >
-                      {subjects?.map(s => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Name</label>
+              <input
+                type="text"
+                required
+                className="block w-full rounded-full border border-brand-primary ring-brand-primary px-4 py-2.5 focus:border-brand-primary focus:ring-brand-primary"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Type</label>
+              <select
+                className="block w-full rounded-full border border-gray-200 px-4 py-2.5 focus:border-brand-primary focus:ring-brand-primary appearance-none bg-white"
+                value={formData.type}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+              >
+                <option value="primary">Primary</option>
+                <option value="secondary">Secondary</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100">
+            <div className="flex justify-between items-center mb-4">
+              <label className="block text-sm font-bold text-gray-700 ml-1">Curriculum</label>
+              <button
+                type="button"
+                onClick={addCurriculumItem}
+                className="bg-white px-4 py-1.5 rounded-full text-xs font-bold text-brand-dark shadow-sm border border-gray-100 hover:bg-gray-50"
+              >
+                + Add Subject
+              </button>
+            </div>
+            <div className="space-y-3">
+              {formData.curriculum.map((item, index) => (
+                <div key={index} className="flex items-center space-x-3 animate-in slide-in-from-top-2 duration-200">
+                  <select
+                    className="flex-1 rounded-full border border-gray-200 px-4 py-2 focus:border-brand-primary focus:ring-brand-primary text-sm appearance-none bg-white"
+                    value={item.subject_id}
+                    onChange={(e) => updateCurriculumItem(index, 'subject_id', e.target.value)}
+                  >
+                    {subjects?.map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                  <div className="flex items-center space-x-2">
                     <input
                       type="number"
-                      className="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                      className="w-20 rounded-full border border-gray-200 px-4 py-2 focus:border-brand-primary focus:ring-brand-primary text-sm"
                       value={item.periods_per_week}
                       onChange={(e) => updateCurriculumItem(index, 'periods_per_week', parseInt(e.target.value))}
                     />
-                    <button
-                      type="button"
-                      onClick={() => removeCurriculumItem(index)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <span className="text-xs font-bold text-gray-400 uppercase">P/W</span>
                   </div>
-                ))}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => removeCurriculumItem(index)}
+                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              ))}
+              {formData.curriculum.length === 0 && (
+                <div className="text-center py-4 text-gray-400 text-sm italic">
+                  No subjects added to curriculum yet.
+                </div>
+              )}
             </div>
+          </div>
 
-            <div className="flex justify-end space-x-3">
-              <button
-                type="button"
-                onClick={cancelForm}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700"
-              >
-                {editingId ? 'Update' : 'Save'}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={cancelForm}
+              className="px-6 py-2.5 text-sm font-bold text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-8 py-2.5 text-sm font-bold text-brand-dark bg-brand-primary rounded-full hover:brightness-95 transition-all shadow-md"
+            >
+              {editingId ? 'Update' : 'Save'}
+            </button>
+          </div>
+        </form>
+      </Modal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {classes?.map((c) => (
-          <div key={c.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <div className="flex justify-between items-start mb-4">
+          <div key={c.id} className="bg-white/80 backdrop-blur-sm p-8 rounded-[2.5rem] shadow-sm border border-white hover:shadow-md transition-all group">
+            <div className="flex justify-between items-start mb-6">
               <div>
-                <h3 className="text-lg font-bold text-gray-900">{c.name}</h3>
-                <span className="text-xs font-medium text-gray-500 uppercase">{c.type}</span>
+                <h3 className="text-2xl font-black text-gray-900">{c.name}</h3>
+                <span className="inline-block mt-1 px-3 py-1 bg-brand-secondary text-brand-dark rounded-full text-[10px] font-black uppercase tracking-widest">{c.type}</span>
               </div>
-              <div className="flex space-x-2">
-                <button 
+              <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
                   onClick={() => startEditing(c)}
-                  className="text-gray-400 hover:text-indigo-600"
+                  className="p-2 text-gray-400 hover:text-brand-dark hover:bg-brand-primary rounded-full transition-all"
                 >
                   <Edit2 size={18} />
                 </button>
-                <button 
+                <button
                   onClick={() => deleteMutation.mutate(c.id)}
-                  className="text-gray-400 hover:text-red-600"
+                  className="p-2 text-gray-400 hover:text-white hover:bg-red-500 rounded-full transition-all"
                 >
                   <Trash2 size={18} />
                 </button>
               </div>
             </div>
-            
-            <div className="space-y-2">
-              <div className="flex items-center text-sm text-gray-600 mb-2">
-                <Book size={16} className="mr-2" />
-                <span className="font-medium">Curriculum</span>
+
+            <div className="space-y-3">
+              <div className="flex items-center text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                <Book size={14} className="mr-2" />
+                <span>Curriculum</span>
               </div>
-              {c.curriculum?.map((item, idx) => (
-                <div key={idx} className="flex justify-between text-sm py-1 border-b border-gray-50 last:border-0">
-                  <span className="text-gray-600">
-                    {subjects?.find(s => s.id === item.subject_id)?.name || 'Unknown'}
-                  </span>
-                  <span className="font-semibold text-gray-900">{item.periods_per_week}p/w</span>
-                </div>
-              ))}
-              {(!c.curriculum || c.curriculum.length === 0) && (
-                <p className="text-xs text-gray-400 italic">No subjects assigned</p>
-              )}
+              <div className="grid gap-2">
+                {c.curriculum?.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center bg-gray-50/50 px-4 py-2.5 rounded-2xl border border-gray-100/50">
+                    <span className="text-sm font-bold text-gray-700">
+                      {subjects?.find(s => s.id === item.subject_id)?.name || 'Unknown'}
+                    </span>
+                    <span className="text-xs font-black text-brand-dark bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">{item.periods_per_week}h</span>
+                  </div>
+                ))}
+                {(!c.curriculum || c.curriculum.length === 0) && (
+                  <p className="text-sm text-gray-400 italic text-center py-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">No subjects assigned</p>
+                )}
+              </div>
             </div>
           </div>
         ))}
