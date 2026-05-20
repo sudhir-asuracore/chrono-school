@@ -1,0 +1,4 @@
+ortools
+fastapi
+uvicorn
+pydantic

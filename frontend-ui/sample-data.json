@@ -1,0 +1,871 @@
+{
+  "subjects": [
+    {
+      "id": "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Mathematics",
+      "requires_double_period": false
+    },
+    {
+      "id": "362993b6-7cb2-40bd-ae71-c95926a98723",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Physics",
+      "requires_double_period": true
+    },
+    {
+      "id": "f76c9ae5-2b80-425a-b702-99b14e78f976",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Chemistry",
+      "requires_double_period": false
+    },
+    {
+      "id": "04ed185e-c2d8-48ef-86fa-f76df19bf91a",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Biology",
+      "requires_double_period": false
+    },
+    {
+      "id": "bba3d588-690d-408d-8ba9-4c5da618119d",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "English Literature",
+      "requires_double_period": true
+    },
+    {
+      "id": "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "World History",
+      "requires_double_period": false
+    },
+    {
+      "id": "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Geography",
+      "requires_double_period": true
+    },
+    {
+      "id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Computer Science",
+      "requires_double_period": false
+    },
+    {
+      "id": "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Art & Design",
+      "requires_double_period": false
+    },
+    {
+      "id": "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Physical Education",
+      "requires_double_period": true
+    },
+    {
+      "id": "d4084c66-9ed2-4653-b605-a54b3fc28fc4",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Music",
+      "requires_double_period": true
+    },
+    {
+      "id": "edf47a7f-33fb-49a3-9b5d-13b85557ec20",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Modern Languages (French)",
+      "requires_double_period": false
+    },
+    {
+      "id": "67b9a5ac-3316-4c18-be47-cecd84b233a8",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Modern Languages (Spanish)",
+      "requires_double_period": false
+    },
+    {
+      "id": "63b244d7-9f06-484a-a581-84e5374d9479",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Economics",
+      "requires_double_period": false
+    },
+    {
+      "id": "896119b0-cbda-4303-8a5a-28c640c5e4bb",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Psychology",
+      "requires_double_period": false
+    },
+    {
+      "id": "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Philosophy",
+      "requires_double_period": true
+    },
+    {
+      "id": "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Sociology",
+      "requires_double_period": false
+    },
+    {
+      "id": "46d38b8b-7fc0-4219-8991-812e5bc64ade",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Drama",
+      "requires_double_period": false
+    },
+    {
+      "id": "55017ab1-719b-4184-b0f4-30308f2ea857",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Latin",
+      "requires_double_period": true
+    },
+    {
+      "id": "f650dd19-3c45-4041-9f8e-e7373392e22f",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Mandarin",
+      "requires_double_period": false
+    },
+    {
+      "id": "77019b5f-458b-4c4a-8f5e-8d546d41b20b",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Business Studies",
+      "requires_double_period": false
+    },
+    {
+      "id": "62cc9809-47e7-434e-80cc-079aa9100021",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Environmental Science",
+      "requires_double_period": false
+    }
+  ],
+  "teachers": [
+    {
+      "id": "6f391fa5-9b89-4d6e-bda0-b71cbd993086",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "John Smith",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8",
+        "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+        "bba3d588-690d-408d-8ba9-4c5da618119d"
+      ]
+    },
+    {
+      "id": "2ab08788-2316-40eb-bb57-7c2c5e11e25a",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Emily Johnson",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca",
+        "62cc9809-47e7-434e-80cc-079aa9100021",
+        "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+        "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6"
+      ]
+    },
+    {
+      "id": "99c3a398-d582-4f54-ad1f-eafe7e564e17",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Michael Brown",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+        "46d38b8b-7fc0-4219-8991-812e5bc64ade"
+      ]
+    },
+    {
+      "id": "0beb489e-9bf9-4fc3-81cd-1e5880c86a3c",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Sarah Davis",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "62cc9809-47e7-434e-80cc-079aa9100021"
+      ]
+    },
+    {
+      "id": "36b8470e-16ad-47a0-973f-21a8a7c50195",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "David Miller",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+        "46d38b8b-7fc0-4219-8991-812e5bc64ade",
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8"
+      ]
+    },
+    {
+      "id": "a8bb1240-5bfe-4220-9375-e55de2b3f03f",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Jessica Wilson",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+        "f650dd19-3c45-4041-9f8e-e7373392e22f",
+        "77019b5f-458b-4c4a-8f5e-8d546d41b20b"
+      ]
+    },
+    {
+      "id": "cf600656-5ebd-4687-a52b-5116e95d38cd",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Christopher Moore",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "55017ab1-719b-4184-b0f4-30308f2ea857",
+        "362993b6-7cb2-40bd-ae71-c95926a98723",
+        "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+        "46d38b8b-7fc0-4219-8991-812e5bc64ade"
+      ]
+    },
+    {
+      "id": "0206dbe9-7fe5-47d0-aeaa-3e9bd0e52c39",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Ashley Taylor",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "46d38b8b-7fc0-4219-8991-812e5bc64ade"
+      ]
+    },
+    {
+      "id": "6c220cb1-7d9b-472d-ac86-d1fe872a93e5",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Matthew Anderson",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "bba3d588-690d-408d-8ba9-4c5da618119d",
+        "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+        "d4084c66-9ed2-4653-b605-a54b3fc28fc4"
+      ]
+    },
+    {
+      "id": "5fe4becd-4027-4eb1-9150-126082b904bd",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Olivia Thomas",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+        "55017ab1-719b-4184-b0f4-30308f2ea857",
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8"
+      ]
+    },
+    {
+      "id": "49741753-5844-403b-beb6-0f5468df3624",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Daniel Jackson",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "edf47a7f-33fb-49a3-9b5d-13b85557ec20",
+        "55017ab1-719b-4184-b0f4-30308f2ea857",
+        "04ed185e-c2d8-48ef-86fa-f76df19bf91a",
+        "62cc9809-47e7-434e-80cc-079aa9100021"
+      ]
+    },
+    {
+      "id": "91671ece-c075-4cab-af6f-92d7935f6097",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Sophia White",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+        "63b244d7-9f06-484a-a581-84e5374d9479"
+      ]
+    },
+    {
+      "id": "f6f0837c-66a3-4bff-8432-2dfce8dc007d",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "James Harris",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "edf47a7f-33fb-49a3-9b5d-13b85557ec20"
+      ]
+    },
+    {
+      "id": "a3f57d54-871a-4541-874b-3d65399fa0f4",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Isabella Martin",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "362993b6-7cb2-40bd-ae71-c95926a98723"
+      ]
+    },
+    {
+      "id": "8e77fff4-a99c-4fa1-aa4f-28ee70c95ebb",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Robert Thompson",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+        "63b244d7-9f06-484a-a581-84e5374d9479",
+        "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca"
+      ]
+    },
+    {
+      "id": "c0266982-9178-4afb-b0cc-35c6a46cfba2",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Mia Garcia",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "55017ab1-719b-4184-b0f4-30308f2ea857"
+      ]
+    },
+    {
+      "id": "3362dadc-9d33-4c42-a230-a6d6d421ab00",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "William Martinez",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "f76c9ae5-2b80-425a-b702-99b14e78f976",
+        "896119b0-cbda-4303-8a5a-28c640c5e4bb",
+        "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+        "d61468e6-8831-4077-9b5c-312d76f3e5a1"
+      ]
+    },
+    {
+      "id": "5183520a-d4ad-479c-a076-cd6fce55615a",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Charlotte Robinson",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "edf47a7f-33fb-49a3-9b5d-13b85557ec20"
+      ]
+    },
+    {
+      "id": "ed14d4c0-bf6d-47d0-b533-ab5a87f380eb",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Joseph Clark",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+        "62cc9809-47e7-434e-80cc-079aa9100021"
+      ]
+    },
+    {
+      "id": "1fb3228e-eb9a-4ec8-9fce-9f52833471fa",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Amelia Rodriguez",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8"
+      ]
+    },
+    {
+      "id": "968c8486-87c5-4970-9265-5260b78ba6f5",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Andrew Lewis",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8",
+        "77019b5f-458b-4c4a-8f5e-8d546d41b20b"
+      ]
+    },
+    {
+      "id": "247e9ec7-8d94-4322-a2d6-7eb6fc1e94bf",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Evelyn Lee",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "62cc9809-47e7-434e-80cc-079aa9100021",
+        "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8"
+      ]
+    },
+    {
+      "id": "d7c224ab-fc68-473f-9610-e0dc8150ad0d",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Joshua Walker",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+        "f650dd19-3c45-4041-9f8e-e7373392e22f",
+        "24be84e2-ee7a-4a1f-b755-863e80ab38a0"
+      ]
+    },
+    {
+      "id": "6f864188-066d-4a9c-b5ce-6bb2f3c9ca80",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Abigail Hall",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "62cc9809-47e7-434e-80cc-079aa9100021",
+        "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+        "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+        "f76c9ae5-2b80-425a-b702-99b14e78f976"
+      ]
+    },
+    {
+      "id": "37678e64-d415-4e2d-b1e9-68faa643a23b",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Kevin Allen",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "77019b5f-458b-4c4a-8f5e-8d546d41b20b",
+        "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+        "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6"
+      ]
+    },
+    {
+      "id": "a47af62c-09ba-4678-912d-ecc6a3b91112",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Harper Young",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "f650dd19-3c45-4041-9f8e-e7373392e22f",
+        "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+        "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca"
+      ]
+    },
+    {
+      "id": "f2065f9f-75c1-4552-b4bd-172d6da06722",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Brian Hernandez",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca",
+        "bba3d588-690d-408d-8ba9-4c5da618119d"
+      ]
+    },
+    {
+      "id": "c49fa77d-441f-459d-b21d-167f189b5b15",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Emily King",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+        "f650dd19-3c45-4041-9f8e-e7373392e22f"
+      ]
+    },
+    {
+      "id": "69c2429a-e05c-482b-9ab4-baa7f33c164f",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Richard Wright",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "77019b5f-458b-4c4a-8f5e-8d546d41b20b",
+        "362993b6-7cb2-40bd-ae71-c95926a98723",
+        "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6"
+      ]
+    },
+    {
+      "id": "09135ade-ab99-4c61-a7b1-27e60bd520f6",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Elizabeth Lopez",
+      "max_slots_per_week": 35,
+      "qualified_subjects": [
+        "67b9a5ac-3316-4c18-be47-cecd84b233a8",
+        "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+        "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6"
+      ]
+    }
+  ],
+  "classes": [
+    {
+      "id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 9-A",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "f650dd19-3c45-4041-9f8e-e7373392e22f",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "55017ab1-719b-4184-b0f4-30308f2ea857",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "62cc9809-47e7-434e-80cc-079aa9100021",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "ddef2ad9-3405-47f2-bb53-b2f36c9a4abd",
+          "subject_id": "bba3d588-690d-408d-8ba9-4c5da618119d",
+          "periods_per_week": 6
+        }
+      ]
+    },
+    {
+      "id": "d5391766-638b-4dbb-a6db-cd00f8a91f57",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 9-B",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "d5391766-638b-4dbb-a6db-cd00f8a91f57",
+          "subject_id": "63b244d7-9f06-484a-a581-84e5374d9479",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "d5391766-638b-4dbb-a6db-cd00f8a91f57",
+          "subject_id": "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "d5391766-638b-4dbb-a6db-cd00f8a91f57",
+          "subject_id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "d5391766-638b-4dbb-a6db-cd00f8a91f57",
+          "subject_id": "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "d5391766-638b-4dbb-a6db-cd00f8a91f57",
+          "subject_id": "46d38b8b-7fc0-4219-8991-812e5bc64ade",
+          "periods_per_week": 4
+        }
+      ]
+    },
+    {
+      "id": "1fd4db56-d9f3-4b1f-bc99-081d4cec3c15",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 10-A",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "1fd4db56-d9f3-4b1f-bc99-081d4cec3c15",
+          "subject_id": "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "1fd4db56-d9f3-4b1f-bc99-081d4cec3c15",
+          "subject_id": "63b244d7-9f06-484a-a581-84e5374d9479",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "1fd4db56-d9f3-4b1f-bc99-081d4cec3c15",
+          "subject_id": "d4084c66-9ed2-4653-b605-a54b3fc28fc4",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "1fd4db56-d9f3-4b1f-bc99-081d4cec3c15",
+          "subject_id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "1fd4db56-d9f3-4b1f-bc99-081d4cec3c15",
+          "subject_id": "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+          "periods_per_week": 6
+        }
+      ]
+    },
+    {
+      "id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 10-B",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "bba3d588-690d-408d-8ba9-4c5da618119d",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "f76c9ae5-2b80-425a-b702-99b14e78f976",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "04ed185e-c2d8-48ef-86fa-f76df19bf91a",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "f650dd19-3c45-4041-9f8e-e7373392e22f",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "c6dfee58-4c4d-47f9-a78c-5ede6e9cd412",
+          "subject_id": "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+          "periods_per_week": 3
+        }
+      ]
+    },
+    {
+      "id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 11-Science",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "362993b6-7cb2-40bd-ae71-c95926a98723",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "62cc9809-47e7-434e-80cc-079aa9100021",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "f76c9ae5-2b80-425a-b702-99b14e78f976",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "bba3d588-690d-408d-8ba9-4c5da618119d",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "c86f950d-781a-4849-ad9b-2b6e5df82838",
+          "subject_id": "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6",
+          "periods_per_week": 3
+        }
+      ]
+    },
+    {
+      "id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 11-Arts",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "edf47a7f-33fb-49a3-9b5d-13b85557ec20",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "62cc9809-47e7-434e-80cc-079aa9100021",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "04ed185e-c2d8-48ef-86fa-f76df19bf91a",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "d4084c66-9ed2-4653-b605-a54b3fc28fc4",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "bba3d588-690d-408d-8ba9-4c5da618119d",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "a5adfe73-a779-4baa-8a89-e3dbd49e2f24",
+          "subject_id": "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6",
+          "periods_per_week": 3
+        }
+      ]
+    },
+    {
+      "id": "d865c16a-e725-4747-badf-095a4e8665c1",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 11-Commerce",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "46d38b8b-7fc0-4219-8991-812e5bc64ade",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "62cc9809-47e7-434e-80cc-079aa9100021",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "d865c16a-e725-4747-badf-095a4e8665c1",
+          "subject_id": "24be84e2-ee7a-4a1f-b755-863e80ab38a0",
+          "periods_per_week": 4
+        }
+      ]
+    },
+    {
+      "id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 12-Science",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+          "subject_id": "04ed185e-c2d8-48ef-86fa-f76df19bf91a",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+          "subject_id": "8bc851e5-4c3e-430a-9e2a-c8c718c9140f",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+          "subject_id": "d4084c66-9ed2-4653-b605-a54b3fc28fc4",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+          "subject_id": "f650dd19-3c45-4041-9f8e-e7373392e22f",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+          "subject_id": "77019b5f-458b-4c4a-8f5e-8d546d41b20b",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "db052302-d7d6-4f78-8ac4-b785e2e7d9a6",
+          "subject_id": "62cc9809-47e7-434e-80cc-079aa9100021",
+          "periods_per_week": 6
+        }
+      ]
+    },
+    {
+      "id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 12-Arts",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "d33b26c9-662d-4d70-ba8b-5ad4c24d8fe6",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "f76c9ae5-2b80-425a-b702-99b14e78f976",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "362993b6-7cb2-40bd-ae71-c95926a98723",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "857b92ef-6eb2-4b12-9a1c-a1240a00bfd6",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "67b9a5ac-3316-4c18-be47-cecd84b233a8",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "d61468e6-8831-4077-9b5c-312d76f3e5a1",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "198d7e08-4c4c-4187-a0d6-bf40383285ee",
+          "subject_id": "63b244d7-9f06-484a-a581-84e5374d9479",
+          "periods_per_week": 5
+        }
+      ]
+    },
+    {
+      "id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+      "organization_id": "00000000-0000-0000-0000-000000000000",
+      "name": "Grade 12-Commerce",
+      "type": "Regular",
+      "curriculum": [
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "362993b6-7cb2-40bd-ae71-c95926a98723",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "46d38b8b-7fc0-4219-8991-812e5bc64ade",
+          "periods_per_week": 6
+        },
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "fd585581-ec04-4b93-82f2-a25ce2bed0fc",
+          "periods_per_week": 5
+        },
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "eda1ec68-0ac1-4184-b4ae-ef39d69cdaca",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "d4084c66-9ed2-4653-b605-a54b3fc28fc4",
+          "periods_per_week": 3
+        },
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "6e60aef6-be42-4e3d-9464-945e7c70d07e",
+          "periods_per_week": 4
+        },
+        {
+          "class_id": "2002ff4a-73ec-4ec6-afc7-fd46346dc861",
+          "subject_id": "67b9a5ac-3316-4c18-be47-cecd84b233a8",
+          "periods_per_week": 5
+        }
+      ]
+    }
+  ]
+}
