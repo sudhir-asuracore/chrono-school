@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -15,22 +16,20 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
     };
 
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleEscape);
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
       window.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-      <div 
-        className="fixed inset-0 bg-brand-dark/20 backdrop-blur-sm transition-opacity" 
+      <div
+        className="fixed inset-0 bg-brand-dark/20 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl border border-white relative z-10 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
@@ -47,7 +46,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -1,19 +1,21 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/chrono-school/backend-api/db/repo"
 	"github.com/chrono-school/backend-api/models"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 type ClassHandler struct {
-	repo *repo.ClassRepo
+	repo               *repo.ClassRepo
+	savedTimetableRepo *repo.SavedTimetableRepo
 }
 
-func NewClassHandler(repo *repo.ClassRepo) *ClassHandler {
-	return &ClassHandler{repo: repo}
+func NewClassHandler(repo *repo.ClassRepo, savedTimetableRepo *repo.SavedTimetableRepo) *ClassHandler {
+	return &ClassHandler{repo: repo, savedTimetableRepo: savedTimetableRepo}
 }
 
 func (h *ClassHandler) Create(c echo.Context) error {
@@ -72,5 +74,12 @@ func (h *ClassHandler) Delete(c echo.Context) error {
 	if err := h.repo.Delete(c.Request().Context(), id, orgID); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+
+	// Mark timetables as stale
+	if err := h.savedTimetableRepo.MarkAsStaleIfUsing(c.Request().Context(), orgID, "class", id); err != nil {
+		// Log error but don't fail the delete
+		c.Logger().Errorf("failed to mark timetables as stale for class %s: %v", id, err)
+	}
+
 	return c.NoContent(http.StatusNoContent)
 }

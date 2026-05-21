@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"github.com/chrono-school/backend-api/models"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -16,8 +17,8 @@ func NewSubjectRepo(db *sqlx.DB) *SubjectRepo {
 }
 
 func (r *SubjectRepo) Create(ctx context.Context, s *models.Subject) error {
-	query := `INSERT INTO subjects (id, organization_id, name, requires_double_period, color) 
-	          VALUES (:id, :organization_id, :name, :requires_double_period, :color)`
+	query := `INSERT INTO subjects (id, organization_id, name, requires_double_period, color, required_room_type) 
+	          VALUES (:id, :organization_id, :name, :requires_double_period, :color, :required_room_type)`
 	_, err := r.db.NamedExecContext(ctx, query, s)
 	return err
 }
@@ -37,7 +38,7 @@ func (r *SubjectRepo) Get(ctx context.Context, id uuid.UUID) (*models.Subject, e
 }
 
 func (r *SubjectRepo) Update(ctx context.Context, s *models.Subject) error {
-	query := `UPDATE subjects SET name = :name, requires_double_period = :requires_double_period, color = :color 
+	query := `UPDATE subjects SET name = :name, requires_double_period = :requires_double_period, color = :color, required_room_type = :required_room_type
 	          WHERE id = :id AND organization_id = :organization_id`
 	_, err := r.db.NamedExecContext(ctx, query, s)
 	return err

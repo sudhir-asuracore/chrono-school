@@ -1,0 +1,1 @@
+ALTER TABLE saved_timetables ADD COLUMN is_stale BOOLEAN DEFAULT FALSE;

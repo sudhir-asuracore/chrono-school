@@ -58,14 +58,19 @@ func main() {
 	classRepo := repo.NewClassRepo(db)
 	jobRepo := repo.NewJobRepo(db)
 	savedTimetableRepo := repo.NewSavedTimetableRepo(db)
+	roomRepo := repo.NewRoomRepo(db)
+	educationalLevelRepo := repo.NewEducationalLevelRepo(db)
 
 	// Initialize handlers
-	subjectHandler := handlers.NewSubjectHandler(subjectRepo)
-	teacherHandler := handlers.NewTeacherHandler(teacherRepo)
-	classHandler := handlers.NewClassHandler(classRepo)
-	jobHandler := handlers.NewJobHandler(jobRepo, teacherRepo, subjectRepo, classRepo, asynqClient)
-	adminHandler := handlers.NewAdminHandler(teacherRepo, subjectRepo, classRepo)
+	subjectHandler := handlers.NewSubjectHandler(subjectRepo, savedTimetableRepo, teacherRepo)
+	teacherHandler := handlers.NewTeacherHandler(teacherRepo, savedTimetableRepo)
+	classHandler := handlers.NewClassHandler(classRepo, savedTimetableRepo)
+	roomHandler := handlers.NewRoomHandler(roomRepo)
+	educationalLevelHandler := handlers.NewEducationalLevelHandler(educationalLevelRepo)
+	jobHandler := handlers.NewJobHandler(jobRepo, teacherRepo, subjectRepo, classRepo, roomRepo, educationalLevelRepo, asynqClient)
+	adminHandler := handlers.NewAdminHandler(teacherRepo, subjectRepo, classRepo, roomRepo, educationalLevelRepo)
 	savedTimetableHandler := handlers.NewSavedTimetableHandler(savedTimetableRepo)
+	substitutionHandler := handlers.NewSubstitutionHandler(teacherRepo, savedTimetableRepo)
 
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -94,6 +99,16 @@ func main() {
 	v1.PUT("/classes/:id", classHandler.Update)
 	v1.DELETE("/classes/:id", classHandler.Delete)
 
+	v1.GET("/rooms", roomHandler.List)
+	v1.POST("/rooms", roomHandler.Create)
+	v1.PUT("/rooms/:id", roomHandler.Update)
+	v1.DELETE("/rooms/:id", roomHandler.Delete)
+
+	v1.GET("/levels", educationalLevelHandler.List)
+	v1.POST("/levels", educationalLevelHandler.Create)
+	v1.PUT("/levels/:id", educationalLevelHandler.Update)
+	v1.DELETE("/levels/:id", educationalLevelHandler.Delete)
+
 	v1.GET("/jobs/:id", jobHandler.Get)
 	v1.GET("/jobs/:id/result", jobHandler.GetResult)
 	v1.POST("/jobs", jobHandler.Create)
@@ -105,6 +120,8 @@ func main() {
 	v1.DELETE("/timetables/:id", savedTimetableHandler.Delete)
 
 	v1.POST("/admin/clear", adminHandler.ClearData)
+
+	v1.GET("/substitution/recommendations", substitutionHandler.GetRecommendations)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -120,6 +137,10 @@ func runMigrations(db *sqlx.DB) error {
 		"db/migrations/000002_add_saved_timetables.up.sql",
 		"db/migrations/000003_add_color_to_subjects_and_teachers.up.sql",
 		"db/migrations/000004_add_unique_constraints.up.sql",
+		"db/migrations/000005_extended_features.up.sql",
+		"db/migrations/000006_add_stale_to_timetables.up.sql",
+		"db/migrations/000007_add_stale_to_teachers.up.sql",
+		"db/migrations/000008_add_educational_levels.up.sql",
 	}
 
 	for _, m := range migrations {

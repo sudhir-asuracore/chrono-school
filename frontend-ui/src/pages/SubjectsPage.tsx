@@ -10,7 +10,8 @@ const SubjectsPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: '', requires_double_period: false, color: PRESET_COLORS[0] });
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{ id: string, name: string } | null>(null);
+  const [formData, setFormData] = useState({ name: '', requires_double_period: false, required_room_type: '', color: PRESET_COLORS[0] });
 
   const { data: subjects, isLoading, isError, error } = useQuery({ queryKey: ['subjects'], queryFn: subjectService.getAll });
 
@@ -19,7 +20,7 @@ const SubjectsPage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subjects'] });
       setIsAdding(false);
-      setFormData({ name: '', requires_double_period: false, color: PRESET_COLORS[0] });
+      setFormData({ name: '', requires_double_period: false, required_room_type: '', color: PRESET_COLORS[0] });
     },
   });
 
@@ -29,7 +30,7 @@ const SubjectsPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['subjects'] });
       setEditingId(null);
       setIsAdding(false);
-      setFormData({ name: '', requires_double_period: false, color: PRESET_COLORS[0] });
+      setFormData({ name: '', requires_double_period: false, required_room_type: '', color: PRESET_COLORS[0] });
     },
   });
 
@@ -40,12 +41,12 @@ const SubjectsPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check for duplicate names
-    const isDuplicate = subjects?.some(s => 
+    const isDuplicate = subjects?.some(s =>
       s.name.toLowerCase() === formData.name.toLowerCase() && s.id !== editingId
     );
-    
+
     if (isDuplicate) {
       alert('A subject with this name already exists.');
       return;
@@ -61,7 +62,7 @@ const SubjectsPage: React.FC = () => {
   const startAdding = () => {
     setEditingId(null);
     const usedColors = subjects?.map(s => s.color) || [];
-    setFormData({ name: '', requires_double_period: false, color: getNextUnusedColor(usedColors) });
+    setFormData({ name: '', requires_double_period: false, required_room_type: '', color: getNextUnusedColor(usedColors) });
     setIsAdding(true);
   };
 
@@ -71,6 +72,7 @@ const SubjectsPage: React.FC = () => {
     setFormData({
       name: subject.name,
       requires_double_period: subject.requires_double_period,
+      required_room_type: subject.required_room_type || '',
       color: subject.color || getNextUnusedColor(usedColors)
     });
     setIsAdding(true);
@@ -79,7 +81,7 @@ const SubjectsPage: React.FC = () => {
   const cancelForm = () => {
     setIsAdding(false);
     setEditingId(null);
-    setFormData({ name: '', requires_double_period: false, color: PRESET_COLORS[0] });
+    setFormData({ name: '', requires_double_period: false, required_room_type: '', color: PRESET_COLORS[0] });
   };
 
   if (isLoading) return (
@@ -92,7 +94,7 @@ const SubjectsPage: React.FC = () => {
     <div className="bg-red-50 p-6 rounded-3xl text-red-700 border border-red-100">
       <h3 className="font-bold">Error loading subjects</h3>
       <p>{(error as any)?.message || 'An unexpected error occurred'}</p>
-      <button 
+      <button
         onClick={() => queryClient.invalidateQueries({ queryKey: ['subjects'] })}
         className="mt-4 px-4 py-2 bg-white rounded-full text-sm font-medium shadow-sm"
       >
@@ -113,7 +115,7 @@ const SubjectsPage: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-3">
           <button
             onClick={startAdding}
@@ -125,9 +127,9 @@ const SubjectsPage: React.FC = () => {
         </div>
       </div>
 
-      <Modal 
-        isOpen={isAdding} 
-        onClose={cancelForm} 
+      <Modal
+        isOpen={isAdding}
+        onClose={cancelForm}
         title={editingId ? 'Edit Subject' : 'Add New Subject'}
       >
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -142,21 +144,38 @@ const SubjectsPage: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
-            <div className="flex items-center h-full pt-8">
-              <label className="flex items-center cursor-pointer">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    className="sr-only"
-                    checked={formData.requires_double_period}
-                    onChange={(e) => setFormData({ ...formData, requires_double_period: e.target.checked })}
-                  />
-                  <div className={cn("block w-14 h-8 rounded-full transition-colors", formData.requires_double_period ? 'bg-brand-primary' : 'bg-gray-200')}></div>
-                  <div className={cn("absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform", formData.requires_double_period ? 'translate-x-6' : '')}></div>
-                </div>
-                <span className="ml-3 text-sm font-bold text-gray-700">Requires Double Period</span>
-              </label>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Required Room Type (Optional)</label>
+              <select
+                className="block w-full rounded-full border border-gray-200 px-4 py-2.5 focus:border-brand-primary focus:ring-brand-primary appearance-none"
+                value={formData.required_room_type}
+                onChange={(e) => setFormData({ ...formData, required_room_type: e.target.value })}
+              >
+                <option value="">Any Room</option>
+                <option value="General">General Classroom</option>
+                <option value="Science Lab">Science Lab</option>
+                <option value="IT Lab">IT Lab</option>
+                <option value="Gym">Gym/Field</option>
+                <option value="Music Room">Music Room</option>
+                <option value="Art Studio">Art Studio</option>
+              </select>
             </div>
+          </div>
+
+          <div className="flex items-center h-full">
+            <label className="flex items-center cursor-pointer">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={formData.requires_double_period}
+                  onChange={(e) => setFormData({ ...formData, requires_double_period: e.target.checked })}
+                />
+                <div className={cn("block w-14 h-8 rounded-full transition-colors", formData.requires_double_period ? 'bg-brand-primary' : 'bg-gray-200')}></div>
+                <div className={cn("absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform", formData.requires_double_period ? 'translate-x-6' : '')}></div>
+              </div>
+              <span className="ml-3 text-sm font-bold text-gray-700">Requires Double Period</span>
+            </label>
           </div>
 
           <div>
@@ -209,8 +228,8 @@ const SubjectsPage: React.FC = () => {
               <tr key={s.id} className="hover:bg-brand-secondary/30 transition-colors group">
                 <td className="px-8 py-5 whitespace-nowrap">
                   <div className="flex items-center space-x-3">
-                    <div 
-                      className="w-3 h-3 rounded-full shadow-sm" 
+                    <div
+                      className="w-3 h-3 rounded-full shadow-sm"
                       style={{ backgroundColor: s.color || '#cbd5e1' }}
                     />
                     <span className="text-sm font-bold text-gray-900">{s.name}</span>
@@ -225,14 +244,14 @@ const SubjectsPage: React.FC = () => {
                 </td>
                 <td className="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
+                    <button
                       onClick={() => startEditing(s)}
                       className="p-2 text-gray-400 hover:text-brand-dark hover:bg-brand-primary rounded-full transition-all"
                     >
                       <Edit2 size={18} />
                     </button>
-                    <button 
-                      onClick={() => deleteMutation.mutate(s.id)}
+                    <button
+                      onClick={() => setDeleteConfirmation({ id: s.id, name: s.name })}
                       className="p-2 text-gray-400 hover:text-white hover:bg-red-500 rounded-full transition-all"
                     >
                       <Trash2 size={18} />
@@ -244,6 +263,42 @@ const SubjectsPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={!!deleteConfirmation}
+        onClose={() => setDeleteConfirmation(null)}
+        title="Confirm Deletion"
+      >
+        <div className="space-y-6">
+          <div className="bg-red-50 p-6 rounded-3xl border border-red-100">
+            <p className="text-red-800 font-medium">
+              Are you sure you want to delete subject <span className="font-black underline">{deleteConfirmation?.name}</span>?
+            </p>
+            <p className="text-red-600 text-sm mt-2">
+              This action cannot be undone. Any teachers qualified for this subject will be marked as stale, and any saved timetables using this subject will also be marked as stale.
+            </p>
+          </div>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => {
+                if (deleteConfirmation) {
+                  deleteMutation.mutate(deleteConfirmation.id);
+                  setDeleteConfirmation(null);
+                }
+              }}
+              className="flex-1 bg-red-500 text-white py-4 rounded-2xl font-black hover:bg-red-600 transition-all shadow-lg shadow-red-200 active:scale-95"
+            >
+              Yes, Delete
+            </button>
+            <button
+              onClick={() => setDeleteConfirmation(null)}
+              className="flex-1 bg-gray-100 text-gray-900 py-4 rounded-2xl font-black hover:bg-gray-200 transition-all active:scale-95"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

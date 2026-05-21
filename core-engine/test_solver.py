@@ -7,8 +7,11 @@ def test_basic_solve():
         "settings": { "timeslots_per_day": 8, "days": ["Mon", "Tue", "Wed", "Thu", "Fri"], "max_search_seconds": 10 },
         "fixed_breaks": [ { "day": "All", "slot_index": 4, "label": "Lunch Break" } ],
         "teachers": [
-            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 24, "qualified_subjects": ["sub_math", "sub_physics"] },
-            { "id": "t_02", "name": "Ms. Jane Smith", "max_slots_per_week": 24, "qualified_subjects": ["sub_history"] }
+            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 24, "qualifications": [{"subject_id": "sub_math", "level_id": "lvl_sec"}, {"subject_id": "sub_physics", "level_id": "lvl_sec"}] },
+            { "id": "t_02", "name": "Ms. Jane Smith", "max_slots_per_week": 24, "qualifications": [{"subject_id": "sub_history", "level_id": "lvl_sec"}] }
+        ],
+        "rooms": [
+            { "id": "r_01", "name": "Room 101", "type": "General" }
         ],
         "subjects": [
             { "id": "sub_math", "name": "Mathematics", "requires_double_period": True },
@@ -20,11 +23,15 @@ def test_basic_solve():
                 "id": "class_9a",
                 "name": "Grade 9, Stream A",
                 "type": "secondary",
+                "level_id": "lvl_sec",
                 "curriculum": [
                     { "subject_id": "sub_math", "periods_per_week": 4 },
                     { "subject_id": "sub_history", "periods_per_week": 3 }
                 ]
             }
+        ],
+        "levels": [
+            { "id": "lvl_sec", "name": "Secondary" }
         ]
     }
     

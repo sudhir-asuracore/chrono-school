@@ -14,3 +14,23 @@
     @apply bg-white/80 backdrop-blur-sm rounded-[2.5rem] shadow-xl border border-white;
   }
 }
+
+@media print {
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+  .no-print {
+    display: none !important;
+  }
+  /* Hide modals, buttons, and navigation during print */
+  [role="dialog"], button, select, .fixed {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  .bg-white {
+    background-color: white !important;
+  }
+}

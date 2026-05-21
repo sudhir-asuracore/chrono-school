@@ -6,8 +6,9 @@ def test_validation_no_teacher():
     payload = {
         "settings": { "timeslots_per_day": 8, "days": ["Mon", "Tue", "Wed", "Thu", "Fri"], "max_search_seconds": 10 },
         "teachers": [
-            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 24, "qualified_subjects": ["sub_math"] }
+            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 24, "qualifications": [{"subject_id": "sub_math", "level_id": "lvl_std"}] }
         ],
+        "levels": [{"id": "lvl_std", "name": "Standard"}],
         "subjects": [
             { "id": "sub_math", "name": "Mathematics" },
             { "id": "sub_physics", "name": "Physics" }
@@ -17,6 +18,7 @@ def test_validation_no_teacher():
                 "id": "class_9a",
                 "name": "Grade 9, Stream A",
                 "type": "secondary",
+                "level_id": "lvl_std",
                 "curriculum": [
                     { "subject_id": "sub_math", "periods_per_week": 4 },
                     { "subject_id": "sub_physics", "periods_per_week": 3 }
@@ -32,20 +34,21 @@ def test_validation_no_teacher():
     print(f"Validation Errors: {response.validation_errors}")
     
     assert response.status == "INFEASIBLE"
-    assert "Subject 'Physics' has no qualified teachers." in response.validation_errors
+    assert "No teacher is qualified to teach 'Physics' at level 'Standard' (required for class 'Grade 9, Stream A')." in response.validation_errors
 
 def test_validation_capacity_exceeded():
     payload = {
         "settings": { "timeslots_per_day": 8, "days": ["Mon", "Tue", "Wed", "Thu", "Fri"], "max_search_seconds": 10 },
         "teachers": [
-            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 2, "qualified_subjects": ["sub_math"] }
+            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 2, "qualifications": [{"subject_id": "sub_math", "level_id": "lvl_std"}] }
         ],
+        "levels": [{"id": "lvl_std", "name": "Standard"}],
         "subjects": [
             { "id": "sub_math", "name": "Mathematics" }
         ],
         "classes": [
             {
-                "id": "class_9a", "name": "9A", "type": "secondary",
+                "id": "class_9a", "name": "9A", "type": "secondary", "level_id": "lvl_std",
                 "curriculum": [{ "subject_id": "sub_math", "periods_per_week": 4 }]
             }
         ]
@@ -58,20 +61,21 @@ def test_validation_capacity_exceeded():
     print(f"Validation Errors: {response.validation_errors}")
     
     assert response.status == "INFEASIBLE"
-    assert "Total requirements for 'Mathematics' (4 periods) exceed total capacity of qualified teachers (2 periods)." in response.validation_errors
+    assert "Class '9A' requires 4 periods of 'Mathematics' at level 'Standard', but total capacity of qualified teachers is only 2." in response.validation_errors
 
 def test_validation_too_many_periods_for_class():
     payload = {
         "settings": { "timeslots_per_day": 2, "days": ["Mon"], "max_search_seconds": 10 },
         "teachers": [
-            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 24, "qualified_subjects": ["sub_math"] }
+            { "id": "t_01", "name": "Mr. John Doe", "max_slots_per_week": 24, "qualifications": [{"subject_id": "sub_math", "level_id": "lvl_std"}] }
         ],
+        "levels": [{"id": "lvl_std", "name": "Standard"}],
         "subjects": [
             { "id": "sub_math", "name": "Mathematics" }
         ],
         "classes": [
             {
-                "id": "class_9a", "name": "9A", "type": "secondary",
+                "id": "class_9a", "name": "9A", "type": "secondary", "level_id": "lvl_std",
                 "curriculum": [{ "subject_id": "sub_math", "periods_per_week": 3 }]
             }
         ]

@@ -1,4 +1,9 @@
 {
+  "levels": [
+    {
+      "name": "Secondary"
+    }
+  ],
   "subjects": [
     {
       "name": "Mathematics",
@@ -25,43 +30,69 @@
     {
       "name": "Alice Math",
       "max_slots_per_week": 30,
-      "qualified_subjects": [
-        "Mathematics"
+      "qualifications": [
+        {
+          "subject_name": "Mathematics",
+          "level_name": "Secondary"
+        }
       ]
     },
     {
       "name": "Bob Physics",
       "max_slots_per_week": 30,
-      "qualified_subjects": [
-        "Physics"
+      "qualifications": [
+        {
+          "subject_name": "Physics",
+          "level_name": "Secondary"
+        }
       ]
     },
     {
       "name": "Charlie Chem",
       "max_slots_per_week": 30,
-      "qualified_subjects": [
-        "Chemistry"
+      "qualifications": [
+        {
+          "subject_name": "Chemistry",
+          "level_name": "Secondary"
+        }
       ]
     },
     {
       "name": "Dana Bio",
       "max_slots_per_week": 30,
-      "qualified_subjects": [
-        "Biology"
+      "qualifications": [
+        {
+          "subject_name": "Biology",
+          "level_name": "Secondary"
+        }
       ]
     },
     {
       "name": "Eve History",
       "max_slots_per_week": 30,
-      "qualified_subjects": [
-        "History"
+      "qualifications": [
+        {
+          "subject_name": "History",
+          "level_name": "Secondary"
+        }
       ]
+    }
+  ],
+  "rooms": [
+    {
+      "name": "Room 101",
+      "type": "General"
+    },
+    {
+      "name": "Room 102",
+      "type": "General"
     }
   ],
   "classes": [
     {
       "name": "Class 10A",
       "type": "Regular",
+      "level_name": "Secondary",
       "curriculum": [
         {
           "subject_name": "Mathematics",
@@ -88,6 +119,7 @@
     {
       "name": "Class 10B",
       "type": "Regular",
+      "level_name": "Secondary",
       "curriculum": [
         {
           "subject_name": "Mathematics",

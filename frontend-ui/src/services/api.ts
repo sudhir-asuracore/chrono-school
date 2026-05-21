@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Subject, Teacher, Class, TimetableJob, SolveResponse, SavedTimetable } from '../types';
+import { Subject, Teacher, Class, TimetableJob, SolveResponse, SavedTimetable, Room, EducationalLevel } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
 
@@ -31,6 +31,20 @@ export const classService = {
   delete: (id: string) => apiClient.delete(`/classes/${id}`),
 };
 
+export const roomService = {
+  getAll: () => apiClient.get<Room[]>('/rooms').then(res => res.data),
+  create: (data: Partial<Room>) => apiClient.post<Room>('/rooms', data).then(res => res.data),
+  update: (id: string, data: Partial<Room>) => apiClient.put<Room>(`/rooms/${id}`, data).then(res => res.data),
+  delete: (id: string) => apiClient.delete(`/rooms/${id}`),
+};
+
+export const levelService = {
+  getAll: () => apiClient.get<EducationalLevel[]>('/levels').then(res => res.data),
+  create: (data: Partial<EducationalLevel>) => apiClient.post<EducationalLevel>('/levels', data).then(res => res.data),
+  update: (id: string, data: Partial<EducationalLevel>) => apiClient.put<EducationalLevel>(`/levels/${id}`, data).then(res => res.data),
+  delete: (id: string) => apiClient.delete(`/levels/${id}`),
+};
+
 export const jobService = {
   create: (snapshot?: any) => apiClient.post<TimetableJob>('/jobs', snapshot).then(res => res.data),
   getStatus: (id: string) => apiClient.get<TimetableJob>(`/jobs/${id}`).then(res => res.data),
@@ -38,7 +52,7 @@ export const jobService = {
 };
 
 export const adminService = {
-  clearData: (options: { teachers: boolean, subjects: boolean, classes: boolean }) => 
+  clearData: (options: { teachers: boolean, subjects: boolean, classes: boolean, rooms: boolean, levels: boolean }) =>
     apiClient.post('/admin/clear', options).then(res => res.data),
 };
 
@@ -48,4 +62,9 @@ export const savedTimetableService = {
   getById: (id: string) => apiClient.get<SavedTimetable>(`/timetables/${id}`).then(res => res.data),
   update: (id: string, data: Partial<SavedTimetable>) => apiClient.put<SavedTimetable>(`/timetables/${id}`, data).then(res => res.data),
   delete: (id: string) => apiClient.delete(`/timetables/${id}`),
+};
+
+export const substitutionService = {
+  getRecommendations: (params: { timetable_id: string, day: string, slot: number, subject_id: string, level_id?: string }) =>
+    apiClient.get<any[]>('/substitution/recommendations', { params }).then(res => res.data),
 };

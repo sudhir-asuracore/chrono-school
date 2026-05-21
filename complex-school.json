@@ -1,0 +1,128 @@
+{
+  "levels": [
+    { "name": "Middle School" },
+    { "name": "High School" }
+  ],
+  "subjects": [
+    { "name": "Mathematics", "requires_double_period": true, "required_room_type": "General" },
+    { "name": "Physics", "requires_double_period": true, "required_room_type": "Science Lab" },
+    { "name": "Chemistry", "requires_double_period": true, "required_room_type": "Science Lab" },
+    { "name": "Physical Education", "requires_double_period": false, "required_room_type": "Gym" },
+    { "name": "French", "requires_double_period": false, "required_room_type": "General" },
+    { "name": "German", "requires_double_period": false, "required_room_type": "General" },
+    { "name": "English", "requires_double_period": false, "required_room_type": "General" },
+    { "name": "Art", "requires_double_period": true, "required_room_type": "General" }
+  ],
+  "teachers": [
+    {
+      "name": "Mr. Newton",
+      "max_slots_per_week": 30,
+      "qualifications": [
+        { "subject_name": "Mathematics", "level_name": "Middle School" },
+        { "subject_name": "Mathematics", "level_name": "High School" },
+        { "subject_name": "Physics", "level_name": "High School" }
+      ],
+      "availability_matrix": [
+        [true, true, true, true, false, false, false, false],
+        [true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true],
+        [true, true, true, true, true, true, true, true]
+      ]
+    },
+    {
+      "name": "Ms. Curie",
+      "max_slots_per_week": 20,
+      "qualifications": [
+        { "subject_name": "Chemistry", "level_name": "Middle School" },
+        { "subject_name": "Chemistry", "level_name": "High School" },
+        { "subject_name": "Physics", "level_name": "Middle School" }
+      ]
+    },
+    {
+      "name": "Mr. Bolt",
+      "max_slots_per_week": 15,
+      "qualifications": [
+        { "subject_name": "Physical Education", "level_name": "Middle School" },
+        { "subject_name": "Physical Education", "level_name": "High School" }
+      ]
+    },
+    {
+      "name": "Mme. Lefebvre",
+      "max_slots_per_week": 25,
+      "qualifications": [
+        { "subject_name": "French", "level_name": "Middle School" }
+      ]
+    },
+    {
+      "name": "Hr. Schmidt",
+      "max_slots_per_week": 25,
+      "qualifications": [
+        { "subject_name": "German", "level_name": "Middle School" },
+        { "subject_name": "German", "level_name": "High School" }
+      ]
+    },
+    {
+      "name": "Ms. Austen",
+      "max_slots_per_week": 25,
+      "qualifications": [
+        { "subject_name": "English", "level_name": "Middle School" },
+        { "subject_name": "English", "level_name": "High School" }
+      ]
+    },
+    {
+      "name": "Mr. Da Vinci",
+      "max_slots_per_week": 20,
+      "qualifications": [
+        { "subject_name": "Art", "level_name": "Middle School" }
+      ]
+    }
+  ],
+  "rooms": [
+    { "name": "Room 101", "type": "General" },
+    { "name": "Room 102", "type": "General" },
+    { "name": "Room 201", "type": "General" },
+    { "name": "Science Lab A", "type": "Science Lab" },
+    { "name": "Main Gym", "type": "Gym" }
+  ],
+  "classes": [
+    {
+      "name": "Grade 9A",
+      "type": "secondary",
+      "level_name": "Middle School",
+      "curriculum": [
+        { "subject_name": "Mathematics", "periods_per_week": 5 },
+        { "subject_name": "Physics", "periods_per_week": 4 },
+        { "subject_name": "French", "periods_per_week": 3, "binding_id": "lang_9" },
+        { "subject_name": "English", "periods_per_week": 4 },
+        { "subject_name": "Physical Education", "periods_per_week": 2 },
+        { "subject_name": "Art", "periods_per_week": 2 }
+      ]
+    },
+    {
+      "name": "Grade 9B",
+      "type": "secondary",
+      "level_name": "Middle School",
+      "curriculum": [
+        { "subject_name": "Mathematics", "periods_per_week": 5 },
+        { "subject_name": "Chemistry", "periods_per_week": 4 },
+        { "subject_name": "German", "periods_per_week": 3, "binding_id": "lang_9" },
+        { "subject_name": "English", "periods_per_week": 4 },
+        { "subject_name": "Physical Education", "periods_per_week": 2 },
+        { "subject_name": "Art", "periods_per_week": 2 }
+      ]
+    },
+    {
+      "name": "Grade 11A",
+      "type": "secondary",
+      "level_name": "High School",
+      "curriculum": [
+        { "subject_name": "Mathematics", "periods_per_week": 6 },
+        { "subject_name": "Physics", "periods_per_week": 5 },
+        { "subject_name": "Chemistry", "periods_per_week": 5 },
+        { "subject_name": "English", "periods_per_week": 4 },
+        { "subject_name": "Physical Education", "periods_per_week": 2 }
+      ]
+    }
+  ]
+}

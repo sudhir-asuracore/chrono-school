@@ -1,287 +1,58 @@
 {
-  "status": "OPTIMAL",
-  "solve_time_ms": 89.42127227783203,
-  "schedule": [
+  "status": "INFEASIBLE",
+  "solve_time_ms": 11.859893798828125,
+  "schedule": [],
+  "unassigned_lessons": [
     {
-      "day": "Mon",
-      "slot_index": 2,
       "class_id": "550e8400-e29b-41d4-a716-446655440201",
       "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
+      "periods_missing": 4
     },
     {
-      "day": "Wed",
-      "slot_index": 5,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 4,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 3,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 1,
       "class_id": "550e8400-e29b-41d4-a716-446655440201",
       "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
+      "periods_missing": 4
     },
     {
-      "day": "Tue",
-      "slot_index": 3,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
-    },
-    {
-      "day": "Wed",
-      "slot_index": 0,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 2,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 5,
       "class_id": "550e8400-e29b-41d4-a716-446655440201",
       "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
+      "periods_missing": 4
     },
     {
-      "day": "Tue",
-      "slot_index": 4,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
-    },
-    {
-      "day": "Wed",
-      "slot_index": 2,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 2,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
-    },
-    {
-      "day": "Tue",
-      "slot_index": 5,
       "class_id": "550e8400-e29b-41d4-a716-446655440201",
       "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
+      "periods_missing": 4
     },
     {
-      "day": "Wed",
-      "slot_index": 6,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 6,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 5,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 4,
       "class_id": "550e8400-e29b-41d4-a716-446655440201",
       "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
+      "periods_missing": 4
     },
     {
-      "day": "Tue",
-      "slot_index": 6,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
-    },
-    {
-      "day": "Wed",
-      "slot_index": 1,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 1,
-      "class_id": "550e8400-e29b-41d4-a716-446655440201",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 1,
       "class_id": "550e8400-e29b-41d4-a716-446655440202",
       "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
+      "periods_missing": 4
     },
     {
-      "day": "Tue",
-      "slot_index": 4,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
-    },
-    {
-      "day": "Wed",
-      "slot_index": 6,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 4,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440001",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440101"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 0,
       "class_id": "550e8400-e29b-41d4-a716-446655440202",
       "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
+      "periods_missing": 4
     },
     {
-      "day": "Tue",
-      "slot_index": 2,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 4,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 1,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440002",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440102"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 4,
       "class_id": "550e8400-e29b-41d4-a716-446655440202",
       "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
+      "periods_missing": 4
     },
     {
-      "day": "Wed",
-      "slot_index": 1,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 1,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 5,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440003",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440103"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 3,
       "class_id": "550e8400-e29b-41d4-a716-446655440202",
       "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
+      "periods_missing": 4
     },
     {
-      "day": "Wed",
-      "slot_index": 5,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 5,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 6,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440004",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440104"
-    },
-    {
-      "day": "Mon",
-      "slot_index": 5,
       "class_id": "550e8400-e29b-41d4-a716-446655440202",
       "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
-    },
-    {
-      "day": "Tue",
-      "slot_index": 5,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
-    },
-    {
-      "day": "Thu",
-      "slot_index": 0,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
-    },
-    {
-      "day": "Fri",
-      "slot_index": 0,
-      "class_id": "550e8400-e29b-41d4-a716-446655440202",
-      "subject_id": "550e8400-e29b-41d4-a716-446655440005",
-      "teacher_id": "550e8400-e29b-41d4-a716-446655440105"
+      "periods_missing": 4
     }
   ],
-  "unassigned_lessons": []
+  "validation_errors": []
 }

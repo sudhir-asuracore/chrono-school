@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"github.com/chrono-school/backend-api/models"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -22,15 +23,15 @@ func (r *ClassRepo) Create(ctx context.Context, c *models.Class) error {
 	}
 	defer tx.Rollback()
 
-	query := `INSERT INTO classes (id, organization_id, name, type) 
-	          VALUES (:id, :organization_id, :name, :type)`
+	query := `INSERT INTO classes (id, organization_id, name, type, level_id) 
+	          VALUES (:id, :organization_id, :name, :type, :level_id)`
 	_, err = tx.NamedExecContext(ctx, query, c)
 	if err != nil {
 		return err
 	}
 
 	for _, item := range c.Curriculum {
-		_, err = tx.ExecContext(ctx, "INSERT INTO curriculum_items (class_id, subject_id, periods_per_week) VALUES ($1, $2, $3)", c.ID, item.SubjectID, item.PeriodsPerWeek)
+		_, err = tx.ExecContext(ctx, "INSERT INTO curriculum_items (class_id, subject_id, periods_per_week, binding_id) VALUES ($1, $2, $3, $4)", c.ID, item.SubjectID, item.PeriodsPerWeek, item.BindingID)
 		if err != nil {
 			return err
 		}
@@ -106,7 +107,7 @@ func (r *ClassRepo) Update(ctx context.Context, c *models.Class) error {
 	}
 	defer tx.Rollback()
 
-	query := `UPDATE classes SET name = :name, type = :type 
+	query := `UPDATE classes SET name = :name, type = :type, level_id = :level_id 
 	          WHERE id = :id AND organization_id = :organization_id`
 	_, err = tx.NamedExecContext(ctx, query, c)
 	if err != nil {
@@ -120,7 +121,7 @@ func (r *ClassRepo) Update(ctx context.Context, c *models.Class) error {
 	}
 
 	for _, item := range c.Curriculum {
-		_, err = tx.ExecContext(ctx, "INSERT INTO curriculum_items (class_id, subject_id, periods_per_week) VALUES ($1, $2, $3)", c.ID, item.SubjectID, item.PeriodsPerWeek)
+		_, err = tx.ExecContext(ctx, "INSERT INTO curriculum_items (class_id, subject_id, periods_per_week, binding_id) VALUES ($1, $2, $3, $4)", c.ID, item.SubjectID, item.PeriodsPerWeek, item.BindingID)
 		if err != nil {
 			return err
 		}

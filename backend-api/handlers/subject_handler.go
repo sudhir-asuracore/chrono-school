@@ -1,19 +1,22 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/chrono-school/backend-api/db/repo"
 	"github.com/chrono-school/backend-api/models"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"net/http"
 )
 
 type SubjectHandler struct {
-	repo *repo.SubjectRepo
+	repo               *repo.SubjectRepo
+	savedTimetableRepo *repo.SavedTimetableRepo
+	teacherRepo        *repo.TeacherRepo
 }
 
-func NewSubjectHandler(repo *repo.SubjectRepo) *SubjectHandler {
-	return &SubjectHandler{repo: repo}
+func NewSubjectHandler(repo *repo.SubjectRepo, savedTimetableRepo *repo.SavedTimetableRepo, teacherRepo *repo.TeacherRepo) *SubjectHandler {
+	return &SubjectHandler{repo: repo, savedTimetableRepo: savedTimetableRepo, teacherRepo: teacherRepo}
 }
 
 func (h *SubjectHandler) Create(c echo.Context) error {
@@ -70,8 +73,21 @@ func (h *SubjectHandler) Delete(c echo.Context) error {
 	}
 	orgID, _ := uuid.Parse("00000000-0000-0000-0000-000000000000")
 
+	// Mark teachers as stale before deleting the subject
+	if err := h.teacherRepo.MarkAsStaleBySubject(c.Request().Context(), orgID, id); err != nil {
+		// Log error but don't fail the delete
+		c.Logger().Errorf("failed to mark teachers as stale for subject %s: %v", id, err)
+	}
+
 	if err := h.repo.Delete(c.Request().Context(), id, orgID); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+
+	// Mark timetables as stale
+	if err := h.savedTimetableRepo.MarkAsStaleIfUsing(c.Request().Context(), orgID, "subject", id); err != nil {
+		// Log error but don't fail the delete
+		c.Logger().Errorf("failed to mark timetables as stale for subject %s: %v", id, err)
+	}
+
 	return c.NoContent(http.StatusNoContent)
 }

@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import TeachersPage from './pages/TeachersPage';
 import SubjectsPage from './pages/SubjectsPage';
 import ClassesPage from './pages/ClassesPage';
+import RoomsPage from './pages/RoomsPage';
 import SchedulerPage from './pages/SchedulerPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
@@ -29,6 +30,7 @@ function App() {
             <Route path="teachers" element={<TeachersPage />} />
             <Route path="subjects" element={<SubjectsPage />} />
             <Route path="classes" element={<ClassesPage />} />
+            <Route path="rooms" element={<RoomsPage />} />
             <Route path="scheduler" element={<SchedulerPage />} />
             <Route path="admin" element={<AdminPage />} />
           </Route>

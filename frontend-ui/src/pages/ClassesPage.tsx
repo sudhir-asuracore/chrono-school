@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { classService, subjectService } from '../services/api';
+import { classService, subjectService, levelService } from '../services/api';
 import { Plus, Trash2, Edit2, Book } from 'lucide-react';
 import Modal from '../components/Modal';
 import { CurriculumItem } from '../types';
@@ -10,17 +10,20 @@ const ClassesPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: '', type: 'secondary', curriculum: [] as CurriculumItem[] });
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{ id: string, name: string } | null>(null);
+  const [formData, setFormData] = useState({ name: '', type: '', level_id: '', curriculum: [] as (CurriculumItem & { key?: string })[] });
+  const [newlyAddedId, setNewlyAddedId] = useState<string | null>(null);
 
   const { data: classes, isLoading, isError, error: classError } = useQuery({ queryKey: ['classes'], queryFn: classService.getAll });
   const { data: subjects } = useQuery({ queryKey: ['subjects'], queryFn: subjectService.getAll });
+  const { data: levels } = useQuery({ queryKey: ['levels'], queryFn: levelService.getAll });
 
   const createMutation = useMutation({
     mutationFn: classService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] });
       setIsAdding(false);
-      setFormData({ name: '', type: 'secondary', curriculum: [] });
+      setFormData({ name: '', type: '', level_id: '', curriculum: [] });
     },
   });
 
@@ -30,7 +33,7 @@ const ClassesPage: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['classes'] });
       setEditingId(null);
       setIsAdding(false);
-      setFormData({ name: '', type: 'secondary', curriculum: [] });
+      setFormData({ name: '', type: '', level_id: '', curriculum: [] });
     },
   });
 
@@ -41,27 +44,31 @@ const ClassesPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check for duplicate names
-    const isDuplicate = classes?.some(c => 
+    const isDuplicate = classes?.some(c =>
       c.name.toLowerCase() === formData.name.toLowerCase() && c.id !== editingId
     );
-    
+
     if (isDuplicate) {
       alert('A class with this name already exists.');
       return;
     }
 
+    const cleanedCurriculum = formData.curriculum.map(({ key, ...rest }: any) => rest);
+    const submissionData = { ...formData, curriculum: cleanedCurriculum };
+
     if (editingId) {
-      updateMutation.mutate(formData);
+      updateMutation.mutate(submissionData);
     } else {
-      createMutation.mutate(formData);
+      createMutation.mutate(submissionData);
     }
   };
 
   const startAdding = () => {
     setEditingId(null);
-    setFormData({ name: '', type: 'secondary', curriculum: [] });
+    setFormData({ name: '', type: '', level_id: levels?.[0]?.id || '', curriculum: [] });
+    setNewlyAddedId(null);
     setIsAdding(true);
   };
 
@@ -70,23 +77,29 @@ const ClassesPage: React.FC = () => {
     setFormData({
       name: cls.name,
       type: cls.type,
-      curriculum: cls.curriculum || []
+      level_id: cls.level_id || '',
+      curriculum: (cls.curriculum || []).map((item: any) => ({ ...item, key: Math.random().toString(36).substr(2, 9) }))
     });
+    setNewlyAddedId(null);
     setIsAdding(true);
   };
 
   const cancelForm = () => {
     setIsAdding(false);
     setEditingId(null);
-    setFormData({ name: '', type: 'secondary', curriculum: [] });
+    setFormData({ name: '', type: '', level_id: '', curriculum: [] });
+    setNewlyAddedId(null);
   };
 
   const addCurriculumItem = () => {
     if (subjects && subjects.length > 0) {
+      const newItemKey = Math.random().toString(36).substr(2, 9);
       setFormData({
         ...formData,
-        curriculum: [...formData.curriculum, { subject_id: subjects[0].id, periods_per_week: 1 }]
+        curriculum: [{ subject_id: subjects[0].id, periods_per_week: 1, binding_id: '', key: newItemKey }, ...formData.curriculum]
       });
+      setNewlyAddedId(newItemKey);
+      setTimeout(() => setNewlyAddedId(null), 2000);
     }
   };
 
@@ -145,9 +158,9 @@ const ClassesPage: React.FC = () => {
         </div>
       </div>
 
-      <Modal 
-        isOpen={isAdding} 
-        onClose={cancelForm} 
+      <Modal
+        isOpen={isAdding}
+        onClose={cancelForm}
         title={editingId ? 'Edit Class' : 'Add New Class'}
       >
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -163,14 +176,17 @@ const ClassesPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Type</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Educational Level</label>
               <select
+                required
                 className="block w-full rounded-full border border-gray-200 px-4 py-2.5 focus:border-brand-primary focus:ring-brand-primary appearance-none bg-white"
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                value={formData.level_id}
+                onChange={(e) => setFormData({ ...formData, level_id: e.target.value })}
               >
-                <option value="primary">Primary</option>
-                <option value="secondary">Secondary</option>
+                <option value="" disabled>Select Level</option>
+                {levels?.map(l => (
+                  <option key={l.id} value={l.id}>{l.name}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -188,32 +204,50 @@ const ClassesPage: React.FC = () => {
             </div>
             <div className="space-y-3">
               {formData.curriculum.map((item, index) => (
-                <div key={index} className="flex items-center space-x-3 animate-in slide-in-from-top-2 duration-200">
-                  <select
-                    className="flex-1 rounded-full border border-gray-200 px-4 py-2 focus:border-brand-primary focus:ring-brand-primary text-sm appearance-none bg-white"
-                    value={item.subject_id}
-                    onChange={(e) => updateCurriculumItem(index, 'subject_id', e.target.value)}
-                  >
-                    {subjects?.map(s => (
-                      <option key={s.id} value={s.id}>{s.name}</option>
-                    ))}
-                  </select>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="number"
-                      className="w-20 rounded-full border border-gray-200 px-4 py-2 focus:border-brand-primary focus:ring-brand-primary text-sm"
-                      value={item.periods_per_week}
-                      onChange={(e) => updateCurriculumItem(index, 'periods_per_week', parseInt(e.target.value))}
-                    />
-                    <span className="text-xs font-bold text-gray-400 uppercase">P/W</span>
+                <div
+                  key={item.key || index}
+                  className={cn(
+                    "flex flex-col space-y-2 p-4 bg-white rounded-3xl border shadow-sm animate-in slide-in-from-top-2 duration-200 transition-all",
+                    item.key === newlyAddedId ? "border-brand-primary ring-2 ring-brand-primary/20 bg-brand-primary/5" : "border-gray-100"
+                  )}
+                >
+                  <div className="flex items-center space-x-3">
+                    <select
+                      className="flex-1 rounded-full border border-gray-200 px-4 py-2 focus:border-brand-primary focus:ring-brand-primary text-sm appearance-none bg-white"
+                      value={item.subject_id}
+                      onChange={(e) => updateCurriculumItem(index, 'subject_id', e.target.value)}
+                    >
+                      {subjects?.map(s => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        className="w-16 rounded-full border border-gray-200 px-3 py-2 focus:border-brand-primary focus:ring-brand-primary text-sm text-center"
+                        value={item.periods_per_week}
+                        onChange={(e) => updateCurriculumItem(index, 'periods_per_week', parseInt(e.target.value))}
+                      />
+                      <span className="text-[10px] font-black text-gray-400 uppercase">P/W</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeCurriculumItem(index)}
+                      className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => removeCurriculumItem(index)}
-                    className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  <div className="flex items-center space-x-2 px-1">
+                    <span className="text-[10px] font-black text-gray-400 uppercase shrink-0">Binding ID:</span>
+                    <input
+                      type="text"
+                      placeholder="e.g. elective-block-1"
+                      className="flex-1 rounded-full border border-gray-100 px-3 py-1 text-xs focus:border-brand-primary focus:ring-brand-primary bg-gray-50/50"
+                      value={item.binding_id || ''}
+                      onChange={(e) => updateCurriculumItem(index, 'binding_id', e.target.value)}
+                    />
+                  </div>
                 </div>
               ))}
               {formData.curriculum.length === 0 && (
@@ -248,7 +282,9 @@ const ClassesPage: React.FC = () => {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <h3 className="text-2xl font-black text-gray-900">{c.name}</h3>
-                <span className="inline-block mt-1 px-3 py-1 bg-brand-secondary text-brand-dark rounded-full text-[10px] font-black uppercase tracking-widest">{c.type}</span>
+                <span className="inline-block mt-1 px-3 py-1 bg-brand-secondary text-brand-dark rounded-full text-[10px] font-black uppercase tracking-widest">
+                  {levels?.find(l => l.id === c.level_id)?.name || 'No Level'}
+                </span>
               </div>
               <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
@@ -258,7 +294,7 @@ const ClassesPage: React.FC = () => {
                   <Edit2 size={18} />
                 </button>
                 <button
-                  onClick={() => deleteMutation.mutate(c.id)}
+                  onClick={() => setDeleteConfirmation({ id: c.id, name: c.name })}
                   className="p-2 text-gray-400 hover:text-white hover:bg-red-500 rounded-full transition-all"
                 >
                   <Trash2 size={18} />
@@ -288,6 +324,42 @@ const ClassesPage: React.FC = () => {
           </div>
         ))}
       </div>
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={!!deleteConfirmation}
+        onClose={() => setDeleteConfirmation(null)}
+        title="Confirm Deletion"
+      >
+        <div className="space-y-6">
+          <div className="bg-red-50 p-6 rounded-3xl border border-red-100">
+            <p className="text-red-800 font-medium">
+              Are you sure you want to delete class <span className="font-black underline">{deleteConfirmation?.name}</span>?
+            </p>
+            <p className="text-red-600 text-sm mt-2">
+              This action cannot be undone. If this class is part of any saved timetables, those tables will be marked as stale.
+            </p>
+          </div>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => {
+                if (deleteConfirmation) {
+                  deleteMutation.mutate(deleteConfirmation.id);
+                  setDeleteConfirmation(null);
+                }
+              }}
+              className="flex-1 bg-red-500 text-white py-4 rounded-2xl font-black hover:bg-red-600 transition-all shadow-lg shadow-red-200 active:scale-95"
+            >
+              Yes, Delete
+            </button>
+            <button
+              onClick={() => setDeleteConfirmation(null)}
+              className="flex-1 bg-gray-100 text-gray-900 py-4 rounded-2xl font-black hover:bg-gray-200 transition-all active:scale-95"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

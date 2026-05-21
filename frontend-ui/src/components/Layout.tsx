@@ -21,6 +21,7 @@ const Layout: React.FC = () => {
             <NavItem to="/teachers" label="Teachers" />
             <NavItem to="/subjects" label="Subjects" />
             <NavItem to="/classes" label="Classes" />
+            <NavItem to="/rooms" label="Rooms" />
             <NavItem to="/scheduler" label="Scheduler" />
           </nav>
 

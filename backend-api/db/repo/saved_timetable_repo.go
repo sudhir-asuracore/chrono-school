@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+
 	"github.com/chrono-school/backend-api/models"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -16,8 +17,8 @@ func NewSavedTimetableRepo(db *sqlx.DB) *SavedTimetableRepo {
 }
 
 func (r *SavedTimetableRepo) Create(ctx context.Context, t *models.SavedTimetable) error {
-	query := `INSERT INTO saved_timetables (id, organization_id, name, data, input_snapshot) 
-	          VALUES (:id, :organization_id, :name, :data, :input_snapshot)`
+	query := `INSERT INTO saved_timetables (id, organization_id, name, data, input_snapshot, is_stale) 
+	          VALUES (:id, :organization_id, :name, :data, :input_snapshot, :is_stale)`
 	if t.ID == uuid.Nil {
 		t.ID = uuid.New()
 	}
@@ -49,8 +50,26 @@ func (r *SavedTimetableRepo) Delete(ctx context.Context, id uuid.UUID, orgID uui
 }
 
 func (r *SavedTimetableRepo) Update(ctx context.Context, t *models.SavedTimetable) error {
-	query := `UPDATE saved_timetables SET name = :name, data = :data, input_snapshot = :input_snapshot, updated_at = NOW() 
+	query := `UPDATE saved_timetables SET name = :name, data = :data, input_snapshot = :input_snapshot, is_stale = :is_stale, updated_at = NOW() 
 	          WHERE id = :id AND organization_id = :organization_id`
 	_, err := r.db.NamedExecContext(ctx, query, t)
+	return err
+}
+
+func (r *SavedTimetableRepo) MarkAsStaleIfUsing(ctx context.Context, orgID uuid.UUID, entityType string, entityID uuid.UUID) error {
+	var query string
+	// Check if JSONB array contains an object with the specified ID for the given type
+	// data is an array of ScheduleEntry: [{teacher_id: "...", subject_id: "...", class_id: "...", ...}, ...]
+	switch entityType {
+	case "teacher":
+		query = `UPDATE saved_timetables SET is_stale = true WHERE organization_id = $1 AND data @> '[{"teacher_id": "` + entityID.String() + `"}]'`
+	case "subject":
+		query = `UPDATE saved_timetables SET is_stale = true WHERE organization_id = $1 AND data @> '[{"subject_id": "` + entityID.String() + `"}]'`
+	case "class":
+		query = `UPDATE saved_timetables SET is_stale = true WHERE organization_id = $1 AND data @> '[{"class_id": "` + entityID.String() + `"}]'`
+	default:
+		return nil
+	}
+	_, err := r.db.ExecContext(ctx, query, orgID)
 	return err
 }
