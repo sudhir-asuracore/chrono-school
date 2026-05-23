@@ -1,0 +1,84 @@
+name: Build Desktop App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux/amd64
+            solver_ext: ""
+          - os: windows-latest
+            platform: windows/amd64
+            solver_ext: ".exe"
+          - os: macos-latest
+            platform: darwin/universal
+            solver_ext: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+
+      - name: Build Solver
+        run: |
+          cd solver-src
+          pip install -r requirements.txt pyinstaller
+          pyinstaller --onefile cli.py --name solver
+          mkdir -p ../bin
+          cp dist/solver${{ matrix.solver_ext }} ../bin/
+        shell: bash
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Build Wails App
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          wails build -platform ${{ matrix.platform }}
+        shell: bash
+
+      - name: Package macOS Solver
+        if: matrix.os == 'macos-latest'
+        run: |
+          # Bundling the solver sidecar into the .app bundle
+          mkdir -p build/bin/desktop-app.app/Contents/MacOS/bin
+          cp bin/solver build/bin/desktop-app.app/Contents/MacOS/bin/
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-app-${{ matrix.os }}
+          path: |
+            build/bin/desktop-app.exe
+            build/bin/desktop-app
+            build/bin/desktop-app.app
